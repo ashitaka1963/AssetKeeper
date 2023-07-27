@@ -19,6 +19,9 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: #fefefe;
+
+  /* --el-text-color: #fefefe; */
+  /* color: #fefefe; */
 }
 
 /* semantic color variables for this project */
