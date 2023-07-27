@@ -1,6 +1,7 @@
 <template>
   <div class="item">
-    <i>
+    <i
+      >aaaa
       <slot name="icon"></slot>
     </i>
     <div class="details">
