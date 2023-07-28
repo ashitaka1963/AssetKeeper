@@ -1,0 +1,58 @@
+{
+  "accounts": [
+    {
+      "id": 1,
+      "name": "ユニバーサルバンク",
+      "type": "Savings",
+      "user": "ashitaka"
+    },
+    {
+      "id": 2,
+      "name": "プレミアムバンク",
+      "type": "Savings",
+      "user": "ashitaka"
+    },
+    {
+      "id": 3,
+      "name": "プロスペリティ銀行",
+      "type": "Savings",
+      "user": "ashitaka"
+    },
+    {
+      "id": 4,
+      "name": "グローバルトラスト銀行",
+      "type": "Savings",
+      "user": "ashitaka"
+    },
+    {
+      "id": 5,
+      "name": "ライフセーバーバンク",
+      "type": "Savings",
+      "user": "ashitaka"
+    },
+    {
+      "id": 6,
+      "name": "プライムファイナンス銀行",
+      "type": "Savings",
+      "user": "ashitaka"
+    },
+    {
+      "id": 7,
+      "name": "ユニティトラスト銀行",
+      "type": "Savings",
+      "user": "ashitaka"
+    },
+    {
+      "id": 8,
+      "name": "プライムファイナンス銀行",
+      "type": "Savings",
+      "user": "san"
+    },
+    {
+      "id": 9,
+      "name": "ユニティトラスト銀行",
+      "type": "Savings",
+      "user": "san"
+    }
+  ]
+}

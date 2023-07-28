@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import TheSideMenu from './components/TheSideMenu.vue'
+import { RouterLink, RouterView } from 'vue-router';
+import TheSideMenu from './components/TheSideMenu.vue';
 </script>
 
 <!-- <template>
@@ -27,6 +27,15 @@ import TheSideMenu from './components/TheSideMenu.vue'
       <el-main><RouterView /></el-main>
     </el-container>
   </div>
+  <!-- <html class="dark">
+    <head></head>
+    <body>
+      <el-container>
+        <el-aside width="200px"><TheSideMenu /></el-aside>
+        <el-main><RouterView /></el-main>
+      </el-container>
+    </body>
+  </html> -->
 </template>
 
 <style scoped>
