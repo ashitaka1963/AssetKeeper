@@ -23,22 +23,17 @@ import TheSideMenu from './components/TheSideMenu.vue';
 <template>
   <div class="common-layout">
     <el-container>
-      <el-aside width="200px"><TheSideMenu /></el-aside>
+      <el-aside class="side-menu" width="80px"><TheSideMenu /></el-aside>
       <el-main><RouterView /></el-main>
     </el-container>
   </div>
-  <!-- <html class="dark">
-    <head></head>
-    <body>
-      <el-container>
-        <el-aside width="200px"><TheSideMenu /></el-aside>
-        <el-main><RouterView /></el-main>
-      </el-container>
-    </body>
-  </html> -->
 </template>
 
 <style scoped>
+.side-menu {
+  background-color: #1f222a;
+}
+
 header {
   line-height: 1.5;
   max-height: 100vh;

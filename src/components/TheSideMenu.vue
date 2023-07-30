@@ -1,19 +1,50 @@
 <script setup lang="ts">
-import { RouterLink } from 'vue-router';
+import { useRouter } from 'vue-router';
+
+import { Menu as IconMenu, Setting, User } from '@element-plus/icons-vue';
+
+const router = useRouter();
+
+const routeMap = new Map([
+  ['1', 'DashboardView'],
+  ['2', 'xxx']
+  // ...
+]);
+
+const menuClick = (key: string) => {
+  router.push({ name: routeMap.get(key) });
+};
 </script>
 
 <template>
-  <!-- TODO:SideMenu -->
-
-  <RouterLink v-bind:to="{ name: 'DashboardView' }"
-    ><el-button type="info" link>HOME</el-button></RouterLink
-  >
+  <el-menu default-active="1" collapse="false" @select="menuClick" background-color="#1F222A">
+    <el-menu-item index="1">
+      <el-icon :size="250"><icon-menu /></el-icon>
+      <template #title>Dashboard</template>
+    </el-menu-item>
+    <el-menu-item index="2">
+      <el-icon :size="250"><user /></el-icon>
+      <template #title>User</template>
+    </el-menu-item>
+    <el-menu-item index="3">
+      <el-icon :size="250"><setting /></el-icon>
+      <template #title>Setting</template>
+    </el-menu-item>
+  </el-menu>
 </template>
 
-<style scoped>
-/* .container {
+<style>
+.el-menu {
+  border-right: none;
+  margin: 0 auto;
+}
+
+.el-menu-item i {
+  color: #3e4451;
+}
+
+.el-menu-item.is-active {
+  color: #c7a780;
   background-color: #30343d;
-  padding: 30px 40px;
-  border-radius: 4px;
-} */
+}
 </style>
