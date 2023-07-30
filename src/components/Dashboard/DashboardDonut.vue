@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // import { ref, computed } from 'vue';
-import Donut from '../Charts/Donut.vue';
+import DonutChart from '../Charts/DonutChart.vue';
 </script>
 
 <template>
@@ -15,8 +15,8 @@ import Donut from '../Charts/Donut.vue';
         <el-col :span="24"> <el-text tag="p" size="large">ユーザ別</el-text></el-col>
       </el-row>
       <el-row class="margin-top">
-        <el-col :span="12"> ashitaka1<Donut /></el-col>
-        <el-col :span="12"> ashitaka2<Donut /></el-col>
+        <el-col :span="12"> ashitaka1<DonutChart /></el-col>
+        <el-col :span="12"> ashitaka2<DonutChart /></el-col>
       </el-row>
     </el-col>
   </el-row>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import StackedColumns from '../Charts/StackedColumns.vue';
+import StackedColumnsChart from '../Charts/StackedColumnsChart.vue';
 
 const currentMonthTotalAmountInit: number = 8000; // TODO:動的取得
 const prevMonthTotalAmountInit: number = 5000; // TODO:動的取得
@@ -135,7 +135,7 @@ function isPositive(value: number): boolean {
         </el-col>
       </el-row>
     </el-col>
-    <el-col :span="16"><StackedColumns /></el-col>
+    <el-col :span="16"><StackedColumnsChart /></el-col>
   </el-row>
 </template>
 

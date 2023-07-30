@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 
-// TODO:Tooltip?カラー
+// TODO:hover時のTooltip?カラー
+// TODO:チャートごとの合計金額表示
 
 // window.Apex = {
 //   chart: {
