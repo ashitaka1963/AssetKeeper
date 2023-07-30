@@ -1,12 +1,14 @@
 <script setup lang="ts">
-// import TheWelcome from '../components/Dashboard/TheWelcome.vue
+import { ref } from 'vue';
 import PageHeader from '../components/PageHeader.vue';
-import DashboardMain from '../components/Dashboard/DashboardMain.vue';
+import DashboardTotalAssets from '../components/Dashboard/DashboardTotalAssets.vue';
 import DashboardDonut from '../components/Dashboard/DashboardDonut.vue';
 import DashboardAccounts from '../components/Dashboard/DashboardAccounts.vue';
 
 import { useAccountsStore } from '@/stores/accounts';
 const accountsStore = useAccountsStore();
+
+const isTop = ref(true);
 
 init();
 
@@ -24,8 +26,8 @@ function getAccounts() {
 
 <template>
   <main>
-    <PageHeader headerName="Dashboard" />
-    <DashboardMain />
+    <PageHeader headerName="Dashboard" :isTop="isTop" />
+    <DashboardTotalAssets />
     <DashboardDonut />
     <DashboardAccounts />
   </main>
