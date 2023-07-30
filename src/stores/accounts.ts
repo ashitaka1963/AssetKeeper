@@ -35,7 +35,6 @@ export const useAccountsStore = defineStore('accounts', {
     async addBalanceHistory(id: number, addItem: any) {
       const account = this.getById(id);
       account.balance_history.push(addItem);
-      account.balance_history = [...account.balance_history, addItem];
     },
     async editBalanceHistory(id: number, editItem: any) {
       const account = this.getById(id);
