@@ -2,9 +2,9 @@
 // TODO:メッセージ表示
 // TODO:残高履歴の降順ソート
 // TODO:前月差分計算
-// TODO:ボタンカラー
-// TODO:重複登録チェック
+// TODO:バリデーション（重複登録チェック、数値）
 // TODO:【table】no-data見栄え
+// TODO:金額に￥マークとカンマ区切り
 
 import { ref, reactive, computed, watch } from 'vue';
 
@@ -33,6 +33,14 @@ let form: any = reactive({
 // const accountId = 1; //TODO:要修正
 const account = computed((): any => {
   return accountsStore.getById(props.accountId);
+});
+
+const dialogTitle = computed((): any => {
+  return isEdit.value ? 'Edit' : 'New';
+});
+
+const dialogButtonName = computed((): any => {
+  return isEdit.value ? 'Update' : 'Create';
 });
 
 // ========================================
@@ -101,14 +109,16 @@ watch(isDialogVisible, (value) => {
             </template>
             <template #default="scope">
               <el-button
+                class="main-icon-button"
+                color="#30343d"
                 @click="editClick(scope.$index)"
-                type="info"
                 :icon="Edit"
                 circle
               ></el-button>
               <el-button
+                class="sub-icon-button"
+                color="#30343d"
                 @click="deleteClick(scope.$index)"
-                type="info"
                 :icon="Delete"
                 circle
               ></el-button>
@@ -119,7 +129,7 @@ watch(isDialogVisible, (value) => {
     </el-row>
   </div>
   <!-- dialog -->
-  <el-dialog v-model="isDialogVisible" title="New" width="30%" align-center class="dialog">
+  <el-dialog v-model="isDialogVisible" :title="dialogTitle" width="30%" align-center class="dialog">
     <el-form :model="form" label-width="80px">
       <el-form-item label="日付">
         <el-date-picker
@@ -144,7 +154,7 @@ watch(isDialogVisible, (value) => {
         <el-input v-model="form.memo" type="textarea" />
       </el-form-item>
       <el-form-item>
-        <el-button color="#c7a780" @click="onSubmit">Create</el-button>
+        <el-button color="#c7a780" @click="onSubmit">{{ dialogButtonName }}</el-button>
         <el-button type="info" @click="isDialogVisible = false">Cancel</el-button>
       </el-form-item>
     </el-form>
@@ -171,5 +181,15 @@ watch(isDialogVisible, (value) => {
 
 .dialog-footer button:first-child {
   margin-right: 10px;
+}
+
+.main-icon-button {
+  border-color: #c7a780;
+  color: #c0b09d;
+}
+
+.sub-icon-button {
+  border-color: #6fd4c3;
+  color: #6fd4c3;
 }
 </style>

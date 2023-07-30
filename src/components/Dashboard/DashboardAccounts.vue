@@ -19,7 +19,7 @@ const accounts = computed((): any => {
 // ========================================
 // Methods
 // ========================================
-// TODO:名前によるソートが事前に必要
+// TODO:残高表示
 // TODO:indexに-1が入る
 // TODO:ユーザ情報としてカラー情報を持たせるか？
 function getColor(name: string, index: number): string {
@@ -65,22 +65,25 @@ function getColor(name: string, index: number): string {
               <el-tag class="ml-2" type="info" effect="dark">{{ scope.row.type }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column prop="balance" label="Balance" width="180" />
+          <el-table-column prop="balance" label="Balance" width="180">¥9,999</el-table-column>
           <el-table-column width="120">
             <template #default="scope">
               <!-- <el-button link type="primary" size="small" @click="handleClick">Detail</el-button> -->
 
-              <RouterLink v-bind:to="{ name: 'AccountDetailView', params: { id: scope.row.id } }"
-                ><el-button type="info" :icon="Search" circle></el-button
-              ></RouterLink>
+              <RouterLink v-bind:to="{ name: 'AccountDetailView', params: { id: scope.row.id } }">
+                <el-button
+                  class="main-icon-button"
+                  color="#30343d"
+                  :icon="Search"
+                  circle
+                ></el-button>
+              </RouterLink>
             </template>
           </el-table-column>
         </el-table>
       </el-col>
     </el-row>
   </div>
-
-  {{ accounts }}
 </template>
 
 <style scoped>
@@ -98,5 +101,10 @@ function getColor(name: string, index: number): string {
 
 .background-color-black {
   background-color: #30343d;
+}
+
+.main-icon-button {
+  border-color: #c7a780;
+  color: #c0b09d;
 }
 </style>
