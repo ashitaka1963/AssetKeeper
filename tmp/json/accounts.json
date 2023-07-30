@@ -6,11 +6,11 @@
       "type": "Savings",
       "user": "ashitaka",
       "balance_history": [
-        { "month": "2023-03", "balance": 150000 },
-        { "month": "2023-04", "balance": 160000 },
-        { "month": "2023-05", "balance": 165000 },
-        { "month": "2023-06", "balance": 170000 },
-        { "month": "2023-07", "balance": 180000 }
+        { "month": "2023-03", "balance": 150000, "memo": "冷蔵庫購入" },
+        { "month": "2023-04", "balance": 160000, "memo": "旅行" },
+        { "month": "2023-05", "balance": 165000, "memo": "節約" },
+        { "month": "2023-06", "balance": 170000, "memo": "特になし" },
+        { "month": "2023-07", "balance": 180000, "memo": "" }
       ]
     },
     {
