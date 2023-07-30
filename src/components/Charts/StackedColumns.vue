@@ -6,6 +6,9 @@ window.Apex = {
     foreColor: '#ccc',
     toolbar: {
       show: false
+    },
+    zoom: {
+      enabled: false
     }
   },
   //   stroke: {
@@ -18,7 +21,7 @@ window.Apex = {
     theme: 'dark'
   },
   grid: {
-    borderColor: '#535A6C',
+    borderColor: '#9496a0',
     xaxis: {
       lines: {
         show: false

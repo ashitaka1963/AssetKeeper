@@ -1,6 +1,14 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { RouterLink } from 'vue-router';
+</script>
 
-<template>TODO:SideMenu</template>
+<template>
+  <!-- TODO:SideMenu -->
+
+  <RouterLink v-bind:to="{ name: 'DashboardView' }"
+    ><el-button type="info" link>HOME</el-button></RouterLink
+  >
+</template>
 
 <style scoped>
 /* .container {

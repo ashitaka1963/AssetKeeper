@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { RouterLink } from 'vue-router';
 import { useAccountsStore } from '@/stores/accounts';
 import { Search } from '@element-plus/icons-vue';
 const accountsStore = useAccountsStore();
@@ -34,41 +35,50 @@ function getColor(name: string, index: number): string {
     // 前のアイテムとnameが異なる場合は次の色を使用し、prevNameとprevColorIndexを更新
     prevName = name;
     prevColorIndex = (prevColorIndex + 1) % colors.length;
-    console.log(prevColorIndex);
     return colors[prevColorIndex];
   }
 }
 </script>
 
 <template>
-  <el-row class="container">
-    <el-col :span="24">
-      <el-table :data="accounts" style="width: 100%">
-        <!-- <el-table-column prop="date" label="Date" width="180" /> -->
-        <el-table-column prop="user" label="User" width="80">
-          <template #default="scope">
-            <el-avatar :style="{ backgroundColor: getColor(scope.row.user, scope.$index) }">
-              {{ scope.row.user[0].toUpperCase() }}
-            </el-avatar>
-          </template>
-        </el-table-column>
-        <el-table-column prop="name" label="Name" width="380" />
+  <div class="container">
+    <el-row>
+      <el-col :span="24">
+        <el-text tag="p" size="large">Accounts</el-text>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="24">
+        <el-table :data="accounts" style="width: 100%">
+          <!-- <el-table-column prop="date" label="Date" width="180" /> -->
+          <el-table-column prop="user" label="User" width="80">
+            <template #default="scope">
+              <el-avatar :style="{ backgroundColor: getColor(scope.row.user, scope.$index) }">
+                {{ scope.row.user[0].toUpperCase() }}
+              </el-avatar>
+            </template>
+          </el-table-column>
+          <el-table-column prop="name" label="Name" width="380" />
 
-        <el-table-column prop="type" label="Type">
-          <template #default="scope">
-            <el-tag class="ml-2" type="info" effect="dark">{{ scope.row.type }}</el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column prop="balance" label="Balance" width="180" />
-        <el-table-column width="120">
-          <template #default>
-            <!-- <el-button link type="primary" size="small" @click="handleClick">Detail</el-button> -->
-            <el-button type="info" :icon="Search" circle></el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-col>
-  </el-row>
+          <el-table-column prop="type" label="Type">
+            <template #default="scope">
+              <el-tag class="ml-2" type="info" effect="dark">{{ scope.row.type }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="balance" label="Balance" width="180" />
+          <el-table-column width="120">
+            <template #default="scope">
+              <!-- <el-button link type="primary" size="small" @click="handleClick">Detail</el-button> -->
+
+              <RouterLink v-bind:to="{ name: 'AccountDetailView', params: { id: scope.row.id } }"
+                ><el-button type="info" :icon="Search" circle></el-button
+              ></RouterLink>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-col>
+    </el-row>
+  </div>
 
   {{ accounts }}
 </template>
@@ -79,6 +89,7 @@ function getColor(name: string, index: number): string {
 }
 
 .container {
+  margin-top: 20px;
   background-color: #30343d;
   padding: 30px 40px;
   border-radius: 4px;

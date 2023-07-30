@@ -3,16 +3,6 @@ import { defineStore } from 'pinia';
 
 import accounts_sample from '../../tmp/json/accounts.json';
 
-// export const useCounterStore = defineStore('counter', () => {
-//   const count = ref(0)
-//   const doubleCount = computed(() => count.value * 2)
-//   function increment() {
-//     count.value++
-//   }
-
-//   return { count, doubleCount, increment }
-// })
-
 export const useAccountsStore = defineStore('accounts', {
   //保持したいデータ
   state: () => {
@@ -22,14 +12,14 @@ export const useAccountsStore = defineStore('accounts', {
     };
   },
   getters: {
-    double: (state) => {
-      return state.count * 2;
+    getById: (state) => {
+      return (id: number): any => {
+        // const account = state.accounts.get(id) as any;
+        return state.accounts.find((item: any) => item.id === id);
+      };
     }
   },
   actions: {
-    increment() {
-      this.count++;
-    },
     async fetchAccounts() {
       this.accounts = accounts_sample.accounts;
       // try {
@@ -41,6 +31,33 @@ export const useAccountsStore = defineStore('accounts', {
       // } finally {
       //   this.loading = false;
       // }
+    },
+    async addBalanceHistory(id: number, addItem: any) {
+      const account = this.getById(id);
+      account.balance_history.push(addItem);
+      account.balance_history = [...account.balance_history, addItem];
+    },
+    async editBalanceHistory(id: number, editItem: any) {
+      const account = this.getById(id);
+      const balanceData = account.balance_history.find(
+        (item: any) => item.month === editItem.month
+      );
+
+      Object.assign(balanceData, editItem);
+    },
+    async deleteBalanceHistory(id: number, deleteItem: any) {
+      const account = this.getById(id);
+      // const balanceData = account.balance_history.find(
+      //   (item: any) => item.month === editItem.month
+      // );
+
+      const indexToDelete = account.balance_history.findIndex(
+        (item: any) => item.month === deleteItem.month
+      );
+
+      if (indexToDelete !== -1) {
+        account.balance_history.splice(indexToDelete, 1);
+      }
     }
   }
 });

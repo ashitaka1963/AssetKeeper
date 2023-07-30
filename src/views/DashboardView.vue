@@ -18,10 +18,7 @@ async function init() {
 }
 
 function getAccounts() {
-  // alert('in');
-  console.log(accountsStore.accounts);
   accountsStore.fetchAccounts();
-  console.log(accountsStore.accounts);
 }
 </script>
 
@@ -30,7 +27,6 @@ function getAccounts() {
     <PageHeader headerName="Dashboard" />
     <DashboardMain />
     <DashboardDonut />
-    <PageHeader headerName="Accounts" />
     <DashboardAccounts />
   </main>
 </template>

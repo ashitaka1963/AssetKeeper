@@ -4,13 +4,21 @@
       "id": 1,
       "name": "ユニバーサルバンク",
       "type": "Savings",
-      "user": "ashitaka"
+      "user": "ashitaka",
+      "balance_history": [
+        { "month": "2023-03", "balance": 150000 },
+        { "month": "2023-04", "balance": 160000 },
+        { "month": "2023-05", "balance": 165000 },
+        { "month": "2023-06", "balance": 170000 },
+        { "month": "2023-07", "balance": 180000 }
+      ]
     },
     {
       "id": 2,
       "name": "プレミアムバンク",
       "type": "Savings",
-      "user": "ashitaka"
+      "user": "ashitaka",
+      "balance_history": []
     },
     {
       "id": 3,
