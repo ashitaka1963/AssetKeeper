@@ -7,7 +7,7 @@ const router = useRouter();
 
 const routeMap = new Map([
   ['1', 'DashboardView'],
-  ['2', 'xxx']
+  ['2', 'UsersView']
   // ...
 ]);
 

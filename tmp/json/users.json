@@ -1,0 +1,18 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Ashitaka",
+      "age": 18,
+      "email": "ashitaka@example.com",
+      "color": "#FFAA80"
+    },
+    {
+      "id": 2,
+      "name": "San",
+      "age": 14,
+      "email": "san@example.com",
+      "color": "#00FF73"
+    }
+  ]
+}

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 // import HomeView from '../views/HomeView.vue';
 import DashboardView from '../views/DashboardView.vue';
 import AccountDetailView from '../views/AccountDetailView.vue';
+import UsersView from '../views/UsersView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,6 +22,11 @@ const router = createRouter({
           id: idNunm
         };
       }
+    },
+    {
+      path: '/Users',
+      name: 'UsersView',
+      component: UsersView
     }
   ]
 });
