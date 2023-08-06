@@ -84,6 +84,7 @@ body {
   --el-table-tr-bg-color: #30343d !important;
   --el-table-header-bg-color: #30343d !important;
   --el-table-row-hover-bg-color: #4c515f !important;
+  --el-table-bg-color: none !important;
 }
 
 /* dialog */
@@ -111,4 +112,30 @@ body {
   /* line-height: var(--el-dialog-font-line-height);
   font-size: var(--el-dialog-title-font-size); */
   color: #9496a0 !important;
+}
+
+/* button */
+/* .el-button.is-circle {
+  border-color: #c7a780;
+
+  border-width: 2px;
+} */
+
+/* select */
+li.el-select-dropdown__item > span {
+  color: #7c808e !important;
+}
+
+.theme-color {
+  color: #c7a780;
+  color: #6fd4c3;
+  color: #9496a0;
+
+  /* 背景色 */
+  color: #30343d;
+
+  /* エリア */
+  color: #30343d;
+
+  color: #7c808e;
 }

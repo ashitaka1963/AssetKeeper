@@ -1,10 +1,8 @@
-import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
-
-import users_sample from '../../tmp/json/users.json';
+import axios from '../axios';
+import showMessage from '../CustomMessage';
 
 export const useUsersStore = defineStore('users', {
-  //保持したいデータ
   state: () => {
     return {
       users: [] as any
@@ -12,42 +10,68 @@ export const useUsersStore = defineStore('users', {
   },
   getters: {
     getById: (state) => {
-      return (id: number): any => {
-        return state.users.find((item: any) => item.id === id);
+      return (userId: number): any => {
+        return state.users.find((item: any) => item._id === userId);
       };
     }
   },
   actions: {
     async fetchUsers() {
-      this.users = users_sample.users;
-      // try {
-      //   this.loading = true;
-      //   const response = await axios.get('https://api.example.com/data');
-      //   this.data = response.data;
-      // } catch (error) {
-      //   this.error = error.message;
-      // } finally {
-      //   this.loading = false;
-      // }
+      axios
+        .get('/users')
+        .then((response: any) => {
+          this.users = response.data;
+          showMessage('ユーザを取得しました。', 'success');
+        })
+        .catch((error: any) => {
+          console.error('Error:', error);
+          showMessage('ユーザの取得に失敗しました。', 'error');
+        });
     },
     async addUser(addItem: any) {
-      this.users.push(addItem);
+      axios
+        .post('/users', addItem)
+        .then((response: any) => {
+          this.users.push(response.data.user);
+          showMessage('ユーザが登録されました。', 'success');
+        })
+        .catch((error: any) => {
+          console.error('Error:', error);
+          showMessage('ユーザの登録に失敗しました。', 'error');
+        });
     },
     async editUser(editItem: any) {
-      const user = this.getById(editItem.id);
-      Object.assign(user, editItem);
+      const userId = editItem._id;
+
+      axios
+        .patch(`/users/${userId}`, editItem)
+        .then((response: any) => {
+          const updateUser = this.getById(editItem._id);
+          Object.assign(updateUser, response.data.user);
+
+          showMessage('ユーザが更新されました。', 'success');
+        })
+        .catch((error: any) => {
+          console.error('Error:', error);
+          showMessage('ユーザの更新に失敗しました。', 'error');
+        });
     },
-    async deleteUser(id: number) {
-      // const account = this.getById(id);
-      // // const balanceData = account.balance_history.find(
-      // //   (item: any) => item.month === editItem.month
-      // // );
+    async deleteUser(userId: number) {
+      axios
+        .delete(`/users/${userId}`)
+        .then((response: any) => {
+          const indexToDelete = this.users.findIndex((item: any) => item._id === userId);
 
-      const indexToDelete = this.users.findIndex((item: any) => item.id === id);
+          if (indexToDelete !== -1) {
+            this.users.splice(indexToDelete, 1);
+          }
 
-      if (indexToDelete !== -1) {
-        this.users.splice(indexToDelete, 1);
-      }
+          showMessage('ユーザが削除されました。', 'success');
+        })
+        .catch((error: any) => {
+          console.error('Error:', error);
+          showMessage('ユーザの削除に失敗しました。', 'error');
+        });
     }
   }
 });

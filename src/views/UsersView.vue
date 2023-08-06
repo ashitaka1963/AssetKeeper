@@ -1,9 +1,10 @@
 <script setup lang="ts">
-// TODO:メッセージ表示
+// TODO:Loading
 // TODO:バリデーション（重複登録チェック、数値）
-// TODO:【table】no-data見栄え
+// TODO:一覧でカラーピッカーを変更できないようにする
 
 import { ref, reactive, computed, watch } from 'vue';
+
 import PageHeader from '../components/PageHeader.vue';
 
 import { useUsersStore } from '@/stores/users';
@@ -14,18 +15,33 @@ const isTop = ref(true);
 const isDialogVisible = ref(false);
 const isEdit = ref(true);
 let form: any = reactive({
-  id: null,
-  name: '',
+  _id: null,
+  userName: '',
+  password: '',
   email: '',
-  color: '#409EFF'
+  role: 'USER',
+  color: '#c7a780'
 });
 
 let defaultForm: any = {
-  id: null,
-  name: '',
+  _id: null,
+  userName: '',
+  password: '',
   email: '',
-  color: '#409EFF'
+  role: 'USER',
+  color: '#c7a780'
 };
+
+const roleOptions = [
+  {
+    value: 'USER',
+    label: 'USER'
+  },
+  {
+    value: 'ADMIN',
+    label: 'ADMIN'
+  }
+];
 
 init();
 
@@ -52,19 +68,18 @@ function getUsers() {
   usersStore.fetchUsers();
 }
 
-function editClick(id: number) {
-  console.log(form);
+function editDialogOpen(userId: number) {
   isDialogVisible.value = !isDialogVisible.value;
   isEdit.value = true;
 
-  Object.assign(form, usersStore.getById(id));
+  Object.assign(form, usersStore.getById(userId));
 }
 
-function deleteClick(id: number) {
-  usersStore.deleteUser(id);
+function deleteUser(userId: number) {
+  usersStore.deleteUser(userId);
 }
 
-function onSubmit() {
+function saveUser() {
   if (isEdit.value) {
     usersStore.editUser({ ...form });
   } else {
@@ -88,9 +103,10 @@ watch(isDialogVisible, (value) => {
       <el-row>
         <el-col :span="24">
           <el-table :data="usersStore.users" style="width: 100%">
-            <el-table-column prop="id" label="ID" width="180" />
-            <el-table-column prop="name" label="Name" />
+            <!-- <el-table-column prop="_id" label="ID" width="180" /> -->
+            <el-table-column prop="userName" label="Name" />
             <el-table-column prop="email" label="E-mail" />
+            <el-table-column prop="role" label="Role" />
 
             <el-table-column prop="color" label="Color">
               <template #default="scope">
@@ -113,14 +129,14 @@ watch(isDialogVisible, (value) => {
                 <el-button
                   class="main-icon-button"
                   color="#30343d"
-                  @click="editClick(scope.row.id)"
+                  @click="editDialogOpen(scope.row._id)"
                   :icon="Edit"
                   circle
                 ></el-button>
                 <el-button
                   class="sub-icon-button"
                   color="#30343d"
-                  @click="deleteClick(scope.row.id)"
+                  @click="deleteUser(scope.row._id)"
                   :icon="Delete"
                   circle
                 ></el-button>
@@ -139,14 +155,27 @@ watch(isDialogVisible, (value) => {
       class="dialog"
     >
       <el-form :model="form" label-width="80px">
-        <el-form-item v-if="isEdit" label="Id">
-          {{ form.id }}
+        <!-- <el-form-item v-if="isEdit" label="Id">
+          {{ form._id }}
+        </el-form-item> -->
+        <el-form-item label="Name">
+          <el-input v-model="form.userName" />
         </el-form-item>
-        <el-form-item label="名前">
-          <el-input v-model="form.name" />
+        <el-form-item label="Password">
+          <el-input v-model="form.password" type="password" show-password />
         </el-form-item>
         <el-form-item label="E-mail">
           <el-input v-model="form.email" />
+        </el-form-item>
+        <el-form-item label="Role">
+          <el-select v-model="form.role" placeholder="Select">
+            <el-option
+              v-for="item in roleOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="Color">
           <el-color-picker v-model="form.color" />
@@ -154,18 +183,21 @@ watch(isDialogVisible, (value) => {
         </el-form-item>
 
         <el-form-item>
-          <el-button color="#c7a780" @click="onSubmit">{{ dialogButtonName }}</el-button>
+          <el-button color="#c7a780" @click="saveUser">{{ dialogButtonName }}</el-button>
           <el-button type="info" @click="isDialogVisible = false">Cancel</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
-    {{ usersStore.users }}
   </main>
 </template>
 
 <style scoped>
 * {
   color: #fefefe;
+}
+
+li.el-select-dropdown__item > span {
+  color: red !important;
 }
 
 .container {
