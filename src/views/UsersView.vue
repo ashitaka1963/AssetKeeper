@@ -68,14 +68,14 @@ function getUsers() {
   usersStore.fetchUsers();
 }
 
-function editDialogOpen(userId: number) {
+function editDialogOpen(userId: string) {
   isDialogVisible.value = !isDialogVisible.value;
   isEdit.value = true;
 
   Object.assign(form, usersStore.getById(userId));
 }
 
-function deleteUser(userId: number) {
+function deleteUser(userId: string) {
   usersStore.deleteUser(userId);
 }
 

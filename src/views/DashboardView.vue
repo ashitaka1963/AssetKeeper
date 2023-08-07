@@ -6,6 +6,9 @@ import DashboardDonut from '../components/Dashboard/DashboardDonut.vue';
 import DashboardAccounts from '../components/Dashboard/DashboardAccounts.vue';
 
 import { useAccountsStore } from '@/stores/accounts';
+import { useUsersStore } from '@/stores/users';
+
+const usersStore = useUsersStore();
 const accountsStore = useAccountsStore();
 
 const isTop = ref(true);
@@ -17,10 +20,15 @@ init();
 // ========================================
 async function init() {
   await getAccounts();
+  await getUsers();
 }
 
 function getAccounts() {
   accountsStore.fetchAccounts();
+}
+
+function getUsers() {
+  usersStore.fetchUsers();
 }
 </script>
 

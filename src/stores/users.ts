@@ -10,7 +10,7 @@ export const useUsersStore = defineStore('users', {
   },
   getters: {
     getById: (state) => {
-      return (userId: number): any => {
+      return (userId: string): any => {
         return state.users.find((item: any) => item._id === userId);
       };
     }
@@ -46,7 +46,7 @@ export const useUsersStore = defineStore('users', {
       axios
         .patch(`/users/${userId}`, editItem)
         .then((response: any) => {
-          const updateUser = this.getById(editItem._id);
+          const updateUser = this.getById(userId);
           Object.assign(updateUser, response.data.user);
 
           showMessage('ユーザが更新されました。', 'success');
@@ -56,7 +56,7 @@ export const useUsersStore = defineStore('users', {
           showMessage('ユーザの更新に失敗しました。', 'error');
         });
     },
-    async deleteUser(userId: number) {
+    async deleteUser(userId: string) {
       axios
         .delete(`/users/${userId}`)
         .then((response: any) => {

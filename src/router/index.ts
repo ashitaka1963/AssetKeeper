@@ -17,9 +17,12 @@ const router = createRouter({
       name: 'AccountDetailView',
       component: AccountDetailView,
       props: (routes) => {
-        const idNunm = Number(routes.params.id);
+        // const idNunm = Number(routes.params.id);
+        // return {
+        //   id: idNunm
+        // };
         return {
-          id: idNunm
+          id: routes.params.id
         };
       }
     },

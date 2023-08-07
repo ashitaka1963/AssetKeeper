@@ -9,7 +9,7 @@ import AccountDetailTransactions from '../components/AccountDetail/AccountDetail
 const isTop = ref(false);
 
 interface Props {
-  id: number;
+  id: string;
 }
 
 const props = defineProps<Props>();
