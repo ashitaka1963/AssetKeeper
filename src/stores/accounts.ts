@@ -6,7 +6,6 @@ export const useAccountsStore = defineStore('accounts', {
   //保持したいデータ
   state: () => {
     return {
-      count: 0,
       accounts: [] as any
     };
   },
@@ -90,43 +89,61 @@ export const useAccountsStore = defineStore('accounts', {
     // 残高履歴
     // ========================
     async addBalanceHistory(accountId: string, addItem: any) {
-      // const account = this.getById(accountId);
-      // account.balance_history.push(addItem);
-
       axios
-        .post(`/balances/${accountId}`, addItem)
+        .post('/balances', addItem)
         .then((response: any) => {
-          console.log(response.data);
           const account = this.getById(accountId);
+
           account.balances.history.push(response.data.balance);
-          showMessage('アカウントが登録されました。', 'success');
+          account.balances.history.sort(
+            (a: any, b: any) => new Date(b.balanceDate) - new Date(a.balanceDate)
+          );
+
+          showMessage('残高情報が登録されました。', 'success');
         })
         .catch((error: any) => {
           console.error('Error:', error);
-          showMessage('アカウントの登録に失敗しました。', 'error');
+          showMessage('残高情報の登録に失敗しました。', 'error');
         });
     },
     async editBalanceHistory(accountId: string, editItem: any) {
-      const account = this.getById(accountId);
-      const balanceData = account.balance_history.find(
-        (item: any) => item.month === editItem.month
-      );
+      const balanceId = editItem._id;
+      axios
+        .patch(`/balances/${balanceId}`, editItem)
+        .then((response: any) => {
+          const updateAccount = this.getById(accountId);
+          const updateBalance = updateAccount.balances.history.find(
+            (item: any) => item._id === balanceId
+          );
+          Object.assign(updateBalance, response.data.balance);
 
-      Object.assign(balanceData, editItem);
+          showMessage('残高情報が更新されました。', 'success');
+        })
+        .catch((error: any) => {
+          console.error('Error:', error);
+          showMessage('残高情報の更新に失敗しました。', 'error');
+        });
     },
     async deleteBalanceHistory(accountId: string, deleteItem: any) {
-      const account = this.getById(accountId);
-      // const balanceData = account.balance_history.find(
-      //   (item: any) => item.month === editItem.month
-      // );
+      const balanceId = deleteItem._id;
+      axios
+        .delete(`/balances/${balanceId}`)
+        .then((response: any) => {
+          const deleteAccount = this.getById(accountId);
+          const indexToDelete = deleteAccount.balances.history.findIndex(
+            (item: any) => item._id === balanceId
+          );
 
-      const indexToDelete = account.balance_history.findIndex(
-        (item: any) => item.month === deleteItem.month
-      );
+          if (indexToDelete !== -1) {
+            deleteAccount.balances.history.splice(indexToDelete, 1);
+          }
 
-      if (indexToDelete !== -1) {
-        account.balance_history.splice(indexToDelete, 1);
-      }
+          showMessage('残高情報が削除されました。', 'success');
+        })
+        .catch((error: any) => {
+          console.error('Error:', error);
+          showMessage('残高情報の削除に失敗しました。', 'error');
+        });
     }
   }
 });

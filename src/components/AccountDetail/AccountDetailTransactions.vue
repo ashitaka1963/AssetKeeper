@@ -1,18 +1,15 @@
 <script setup lang="ts">
 // TODO:メッセージ表示
-// TODO:残高履歴の降順ソート
 // TODO:前月差分計算
 // TODO:バリデーション（重複登録チェック、数値）
-// TODO:【table】no-data見栄え
-// TODO:金額に￥マークとカンマ区切り
-
+import dayjs from 'dayjs';
 import { ref, reactive, computed, watch } from 'vue';
 
 import { useAccountsStore } from '@/stores/accounts';
 import { Delete, Edit } from '@element-plus/icons-vue';
 
 interface Props {
-  accountId: number;
+  accountId: string;
 }
 
 const props = defineProps<Props>();
@@ -22,15 +19,24 @@ const accountsStore = useAccountsStore();
 const isDialogVisible = ref(false);
 const isEdit = ref(true);
 let form: any = reactive({
-  month: '',
-  balance: '',
+  _id: null,
+  accountId: props.accountId,
+  balanceDate: '',
+  balanceAmount: '',
   memo: ''
 });
+
+let defaultForm: any = {
+  _id: null,
+  accountId: props.accountId,
+  balanceDate: '',
+  balanceAmount: '',
+  memo: ''
+};
 
 // ========================================
 // Computed
 // ========================================
-// const accountId = 1; //TODO:要修正
 const account = computed((): any => {
   return accountsStore.getById(props.accountId);
 });
@@ -46,17 +52,17 @@ const dialogButtonName = computed((): any => {
 // ========================================
 // Methods
 // ========================================
-function editClick(index: number) {
+function editDialogOpen(index: number) {
   isDialogVisible.value = !isDialogVisible.value;
   isEdit.value = true;
-  Object.assign(form, account.value.balance_history[index]);
+  Object.assign(form, account.value.balances.history[index]);
 }
 
-function deleteClick(index: number) {
-  accountsStore.deleteBalanceHistory(props.accountId, account.value.balance_history[index]);
+function deleteBalance(index: number) {
+  accountsStore.deleteBalanceHistory(props.accountId, account.value.balances.history[index]);
 }
 
-function onSubmit() {
+function saveBalance() {
   if (isEdit.value) {
     accountsStore.editBalanceHistory(props.accountId, { ...form });
   } else {
@@ -69,7 +75,7 @@ function onSubmit() {
 // Watch
 // ========================================
 watch(isDialogVisible, (value) => {
-  !value ? Object.keys(form).forEach((key) => (form[key] = '')) : '';
+  !value ? Object.assign(form, defaultForm) : '';
 });
 </script>
 
@@ -83,7 +89,7 @@ watch(isDialogVisible, (value) => {
     <el-row>
       <!-- <el-text tag="p" size="large">総資産</el-text> -->
       <el-col :span="24">
-        <el-table :data="account.balance_history" style="width: 100%">
+        <el-table :data="account.balances.history" style="width: 100%">
           <!-- <el-table-column prop="date" label="Date" width="180" /> -->
           <!-- <el-table-column prop="user" label="User" width="80">
             <template #default="scope">
@@ -92,9 +98,15 @@ watch(isDialogVisible, (value) => {
               </el-avatar>
             </template>
           </el-table-column> -->
-          <el-table-column prop="month" label="対象月" width="180" />
-          <el-table-column prop="balance" label="残高" />
-          <el-table-column label="前月差分">999</el-table-column>
+          <el-table-column prop="balanceDate" label="対象月" width="180">
+            <template #default="scope"
+              >{{ scope.row.balanceDate ? dayjs(scope.row.balanceDate).format('YYYY/MM/DD') : '-' }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="balanceAmount" label="残高">
+            <template #default="scope">￥ {{ scope.row.balanceAmount.toLocaleString() }} </template>
+          </el-table-column>
+          <el-table-column label="前月差分">￥ 999</el-table-column>
           <el-table-column prop="memo" label="メモ" />
           <el-table-column width="120">
             <template #header>
@@ -111,14 +123,14 @@ watch(isDialogVisible, (value) => {
               <el-button
                 class="main-icon-button"
                 color="#30343d"
-                @click="editClick(scope.$index)"
+                @click="editDialogOpen(scope.$index)"
                 :icon="Edit"
                 circle
               ></el-button>
               <el-button
                 class="sub-icon-button"
                 color="#30343d"
-                @click="deleteClick(scope.$index)"
+                @click="deleteBalance(scope.$index)"
                 :icon="Delete"
                 circle
               ></el-button>
@@ -133,7 +145,7 @@ watch(isDialogVisible, (value) => {
     <el-form :model="form" label-width="80px">
       <el-form-item label="日付">
         <el-date-picker
-          v-model="form.month"
+          v-model="form.balanceDate"
           type="month"
           placeholder="Pick a date"
           style="width: 100%"
@@ -144,7 +156,7 @@ watch(isDialogVisible, (value) => {
       </el-form-item>
       <el-form-item label="残高">
         <el-input
-          v-model="form.balance"
+          v-model="form.balanceAmount"
           :formatter="(value: string) => `¥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
           :parser="(value: string) => value.replace(/\¥\s?|(,*)/g, '')"
         />
@@ -154,12 +166,12 @@ watch(isDialogVisible, (value) => {
         <el-input v-model="form.memo" type="textarea" />
       </el-form-item>
       <el-form-item>
-        <el-button color="#c7a780" @click="onSubmit">{{ dialogButtonName }}</el-button>
+        <el-button color="#c7a780" @click="saveBalance">{{ dialogButtonName }}</el-button>
         <el-button type="info" @click="isDialogVisible = false">Cancel</el-button>
       </el-form-item>
     </el-form>
   </el-dialog>
-  <!-- {{ account.balance_history }} -->
+  <!-- {{ account.balances.history }} -->
 </template>
 
 <style scoped>

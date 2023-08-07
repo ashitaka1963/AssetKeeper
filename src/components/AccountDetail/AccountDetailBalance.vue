@@ -3,7 +3,7 @@ import { ref, computed } from 'vue';
 import BasicLineChart from '../Charts/BasicLineChart.vue';
 
 interface Props {
-  accountId: number;
+  accountId: string;
 }
 
 const props = defineProps<Props>();
