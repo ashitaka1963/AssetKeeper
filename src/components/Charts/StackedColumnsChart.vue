@@ -1,5 +1,12 @@
 <script setup lang="ts">
+import dayjs from 'dayjs';
 import { ref, computed } from 'vue';
+
+interface Props {
+  series: object;
+}
+
+const props = defineProps<Props>();
 
 window.Apex = {
   chart: {
@@ -70,10 +77,11 @@ const optionsInit: any = {
       //   }
     }
   },
-  xaxis: {
-    type: 'datetime',
-    categories: ['2023/02', '2023/03', '2023/04', '2023/05', '2023/06', '2023/07']
-  },
+  // xaxis: {
+  //   // type: 'category'
+  //   // type: 'datetime',
+  //   // categories: ['2023/02', '2023/03', '2023/04', '2023/05', '2023/06', '2023/07']
+  // },
   legend: {
     position: 'top',
     labels: {
@@ -92,31 +100,21 @@ const optionsInit: any = {
   }
 };
 
-const seriesInit: any = [
-  {
-    name: 'A銀行',
-    data: [44, 55, 55, 67, 76, 80]
-  },
-  {
-    name: 'B銀行',
-    data: [13, 23, 20, 28, 30, 31]
-  },
-  {
-    name: 'C証券',
-    data: [11, 17, 15, 15, 21, 14]
-  },
-  {
-    name: 'その他',
-    data: [21, 7, 25, 13, 22, 38]
-  }
-];
+const year = 2023; //TODO:2023年固定
+const xaxis: any = [];
+for (let month = 1; month <= 12; month++) {
+  const monthString = month.toString().padStart(2, '0');
+  const date = dayjs(`${year}-${monthString}-01`);
+  xaxis.push(date.format('YYYY/MM'));
+}
+
+optionsInit.xaxis = { categories: xaxis };
 const options = ref(optionsInit);
-const series = ref(seriesInit);
 </script>
 
 <template>
   <!-- <apexchart width="500" type="bar" :options="options" :series="series"></apexchart> -->
-  <apexchart height="250" type="bar" :options="options" :series="series"></apexchart>
+  <apexchart height="250" type="bar" :options="options" :series="props.series"></apexchart>
 </template>
 
 <style scoped>
