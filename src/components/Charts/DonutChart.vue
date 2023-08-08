@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 
-// TODO:hover時のTooltip?カラー
-// TODO:チャートごとの合計金額表示
+interface Props {
+  series: object;
+  labels: object;
+}
+
+const props = defineProps<Props>();
 
 // window.Apex = {
 //   chart: {
@@ -51,6 +55,28 @@ const optionsInit: any = {
       }
     }
   ],
+  // dataLabels: {
+  //   enabled: true,
+  //   formatter: function (val) {
+  //     return val + '%';
+  //   }
+  // },
+  plotOptions: {
+    pie: {
+      donut: {
+        labels: {
+          show: true,
+          total: {
+            show: true,
+            showAlways: true,
+            label: 'Total',
+            color: '#7c808e'
+          }
+        }
+      }
+    }
+  },
+  colors: '#7c808e',
   stroke: {
     width: 0
   },
@@ -77,14 +103,17 @@ const optionsInit: any = {
   }
 };
 
-const seriesInit: any = [44, 55, 41, 17];
-const options = ref(optionsInit);
-const series = ref(seriesInit);
+const options = computed((): any => {
+  const option = optionsInit;
+  option.labels = props.labels;
+
+  return option;
+});
 </script>
 
 <template>
   <!-- <apexchart width="500" type="bar" :options="options" :series="series"></apexchart> -->
-  <apexchart height="250" type="donut" :options="options" :series="series"></apexchart>
+  <apexchart height="250" type="donut" :options="options" :series="props.series"></apexchart>
 </template>
 
 <style scoped>

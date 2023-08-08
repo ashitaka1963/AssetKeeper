@@ -1,22 +1,62 @@
 <script setup lang="ts">
-// import { ref, computed } from 'vue';
+import { ref, computed } from 'vue';
+import { useUsersStore } from '@/stores/users';
+import { useAccountsStore } from '@/stores/accounts';
 import DonutChart from '../Charts/DonutChart.vue';
+
+const usersStore = useUsersStore();
+const accountsStore = useAccountsStore();
+
+// ========================================
+// Computed
+// ========================================
+const users = computed((): any => {
+  return usersStore.users;
+});
+
+const accounts = computed((): any => {
+  return accountsStore.accounts;
+});
+
+const lineSeriesPerUser = computed((): any => {
+  let lineSeriesPerUser: any = [];
+  users.value.forEach((user: any) => {
+    const userId = user._id;
+
+    const filterAccounts = accounts.value.filter((account: any) => {
+      return account.ownerId == userId;
+    });
+
+    console.log(filterAccounts);
+
+    let series: Array<number> = [];
+    let labels: Array<string> = [];
+
+    filterAccounts.forEach((filterAccount: any) => {
+      series.push(filterAccount.balances.latestBalance);
+      labels.push(filterAccount.accountName);
+    });
+
+    lineSeriesPerUser.push({
+      userName: user.userName,
+      series: series,
+      labels: labels
+    });
+  });
+  return lineSeriesPerUser;
+});
 </script>
 
 <template>
-  <!-- <el-row class="container">
-    <el-col :span="24"> <el-text tag="p" size="large">ユーザ別</el-text></el-col>
-    <el-col :span="8" class="margin-top"> ashitaka1<Donut /></el-col>
-    <el-col :span="8"> ashitaka2<Donut /></el-col>
-  </el-row> -->
   <el-row class="container">
     <el-col :span="24">
       <el-row>
         <el-col :span="24"> <el-text tag="p" size="large">ユーザ別</el-text></el-col>
       </el-row>
       <el-row class="margin-top">
-        <el-col :span="12"> ashitaka1<DonutChart /></el-col>
-        <el-col :span="12"> ashitaka2<DonutChart /></el-col>
+        <el-col v-for="item in lineSeriesPerUser" :key="item.userName" :span="12">
+          {{ item.userName }}<DonutChart :series="item.series" :labels="item.labels"
+        /></el-col>
       </el-row>
     </el-col>
   </el-row>
