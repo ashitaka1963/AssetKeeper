@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 
+interface Props {
+  series: object;
+}
+
+const props = defineProps<Props>();
+
 const optionsInit: any = {
   chart: {
     type: 'line',
@@ -37,8 +43,14 @@ const optionsInit: any = {
     borderColor: '#4c515f'
   },
   xaxis: {
-    type: 'datetime',
-    categories: ['2023/02', '2023/03', '2023/04', '2023/05', '2023/06', '2023/07']
+    type: 'category'
+    // type: 'numeric'
+    // type: 'datetime',
+    // labels: {
+    //   format: 'yyyy/MM'
+    // }
+
+    // categories: ['2023/02', '2023/03', '2023/04', '2023/05', '2023/06', '2023/07']
   },
   markers: {
     size: 4,
@@ -61,19 +73,11 @@ const optionsInit: any = {
   //
 };
 
-const seriesInit: any = [
-  {
-    name: 'A銀行',
-    data: [44, 55, 55, 67, 76, 80]
-  }
-];
 const options = ref(optionsInit);
-const series = ref(seriesInit);
 </script>
 
 <template>
-  <!-- <apexchart width="500" type="bar" :options="options" :series="series"></apexchart> -->
-  <apexchart height="250" type="line" :options="options" :series="series"></apexchart>
+  <apexchart height="250" type="line" :options="options" :series="props.series"></apexchart>
 </template>
 
 <style scoped>

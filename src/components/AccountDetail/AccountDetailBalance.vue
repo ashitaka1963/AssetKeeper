@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import dayjs from 'dayjs';
+import { computed } from 'vue';
+import { useAccountsStore } from '@/stores/accounts';
 import BasicLineChart from '../Charts/BasicLineChart.vue';
 
 interface Props {
@@ -7,41 +9,109 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
-const currentMonthTotalAmountInit: number = 8000; // TODO:動的取得
-const prevMonthTotalAmountInit: number = 5000; // TODO:動的取得
-const prevYearTotalAmountInit: number = 9000; // TODO:動的取得
-
-const currentMonthTotalAmount = ref(currentMonthTotalAmountInit);
-const prevMonthTotalAmount = ref(prevMonthTotalAmountInit);
-const prevYearTotalAmount = ref(prevYearTotalAmountInit);
+const accountsStore = useAccountsStore();
 
 // ========================================
 // Computed
 // ========================================
+const account = computed((): any => {
+  return accountsStore.getById(props.accountId);
+});
+
+const lineSeries = computed((): any => {
+  const year = 2023; //TODO:2023年固定
+  const monthlyData: any = [];
+  for (let month = 1; month <= 12; month++) {
+    const monthString = month.toString().padStart(2, '0');
+    const date = dayjs(`${year}-${monthString}-01`);
+    monthlyData.push({
+      x: date.format('YYYY/MM'),
+      y: null
+    });
+  }
+
+  // トランザクションデータを月ごとにマッピング
+  account.value.balances.history.forEach((balance: any) => {
+    const balanceYear = dayjs(balance.balanceDate).year();
+    if (balanceYear == year) {
+      const monthIndex = dayjs(balance.balanceDate).month();
+      monthlyData[monthIndex].y = balance.balanceAmount;
+    }
+  });
+
+  const series: any = [
+    {
+      name: '',
+      data: monthlyData
+    }
+  ];
+
+  return series;
+});
+
 const formattedNumber = computed((): string => {
-  return currentMonthTotalAmount.value.toLocaleString();
+  const latestBalance =
+    account.value.balances.history.length != 0
+      ? account.value.balances.history[0].balanceAmount
+      : 0;
+  return latestBalance.toLocaleString();
+});
+
+const currentMonthAmount = computed((): number => {
+  // 今月残高
+  const today = dayjs();
+  const balanceHistory = account.value.balances.history;
+  const currentMonthAmount = findSameDate(balanceHistory, today, 'month');
+
+  return currentMonthAmount;
+});
+
+const prevMonthAmount = computed((): number => {
+  // 前月残高
+  const prevMonth = dayjs().subtract(1, 'month');
+  const balanceHistory = account.value.balances.history;
+  const prevMonthAmount = findSameDate(balanceHistory, prevMonth, 'month');
+
+  return prevMonthAmount;
+});
+
+const prevYearAmount = computed((): number => {
+  // 前年同月残高
+  const prevYear = dayjs().subtract(1, 'year');
+  const balanceHistory = account.value.balances.history;
+  const prevYearAmount = findSameDate(balanceHistory, prevYear, 'month');
+
+  return prevYearAmount;
 });
 
 const previousMonthComparison = computed((): string => {
-  return addPlusSign(currentMonthTotalAmount.value - prevMonthTotalAmount.value);
+  return addPlusSign(currentMonthAmount.value - prevMonthAmount.value);
 });
 
 const previousMonthRatio = computed((): string => {
-  return calculateIncreaseRatio(currentMonthTotalAmount.value, prevMonthTotalAmount.value);
+  return calculateIncreaseRatio(currentMonthAmount.value, prevMonthAmount.value);
 });
 
 const previousYearComparison = computed((): string => {
-  return addPlusSign(currentMonthTotalAmount.value - prevYearTotalAmount.value);
+  return addPlusSign(currentMonthAmount.value - prevYearAmount.value);
 });
 
 const previousYearRatio = computed((): string => {
-  return calculateIncreaseRatio(currentMonthTotalAmount.value, prevYearTotalAmount.value);
+  return calculateIncreaseRatio(currentMonthAmount.value, prevYearAmount.value);
 });
 
 // ========================================
 // Methods
 // ========================================
+function findSameDate(balanceHistory: Array<T>, targetDate: any, unit: dayjs.OpUnitType): number {
+  const foundData = balanceHistory.find((item: any) => {
+    const balanceDate = dayjs(item.balanceDate);
+    return balanceDate.isSame(targetDate, unit);
+  });
+
+  return foundData ? foundData.balanceAmount : 0;
+}
+
 function addPlusSign(number: number) {
   if (typeof number === 'number' && Number.isInteger(number)) {
     return number >= 0 ? `+${number.toLocaleString()}` : `${number.toLocaleString()}`;
@@ -53,7 +123,8 @@ function addPlusSign(number: number) {
 function calculateIncreaseRatio(currentValue: number, previousValue: number) {
   if (typeof previousValue === 'number' && typeof currentValue === 'number') {
     const increase = currentValue - previousValue;
-    const ratio = (increase / previousValue) * 100;
+    // const ratio = (increase / previousValue) * 100;
+    const ratio = previousValue !== 0 ? (increase / previousValue) * 100 : 0;
     const formattedRatio = ratio >= 0 ? `+${ratio.toFixed(1)}` : `${ratio.toFixed(1)}`;
     return formattedRatio;
   } else {
@@ -73,7 +144,7 @@ function isPositive(value: number): boolean {
     <el-col :span="8">
       <el-row>
         <el-col :span="24">
-          <el-text tag="p" size="large">総資産</el-text>
+          <el-text tag="p" size="large">資産</el-text>
         </el-col>
       </el-row>
       <el-row>
@@ -93,9 +164,7 @@ function isPositive(value: number): boolean {
             tag="span"
             size="large"
             v-bind:class="
-              isPositive(currentMonthTotalAmount - prevMonthTotalAmount)
-                ? 'positive-text'
-                : 'negative-text'
+              isPositive(currentMonthAmount - prevMonthAmount) ? 'positive-text' : 'negative-text'
             "
             >{{ previousMonthComparison }}</el-text
           >
@@ -103,9 +172,7 @@ function isPositive(value: number): boolean {
           <el-text
             tag="span"
             v-bind:class="
-              isPositive(currentMonthTotalAmount - prevMonthTotalAmount)
-                ? 'positive-text'
-                : 'negative-text'
+              isPositive(currentMonthAmount - prevMonthAmount) ? 'positive-text' : 'negative-text'
             "
             >{{ previousMonthRatio }}%</el-text
           >
@@ -121,9 +188,7 @@ function isPositive(value: number): boolean {
             tag="span"
             size="large"
             v-bind:class="
-              isPositive(currentMonthTotalAmount - prevYearTotalAmountInit)
-                ? 'positive-text'
-                : 'negative-text'
+              isPositive(currentMonthAmount - prevYearAmount) ? 'positive-text' : 'negative-text'
             "
             >{{ previousYearComparison }}</el-text
           >
@@ -131,9 +196,7 @@ function isPositive(value: number): boolean {
           <el-text
             tag="span"
             v-bind:class="
-              isPositive(currentMonthTotalAmount - prevYearTotalAmountInit)
-                ? 'positive-text'
-                : 'negative-text'
+              isPositive(currentMonthAmount - prevYearAmount) ? 'positive-text' : 'negative-text'
             "
             >{{ previousYearRatio }}%</el-text
           >
@@ -141,7 +204,7 @@ function isPositive(value: number): boolean {
         </el-col>
       </el-row>
     </el-col>
-    <el-col :span="16"><BasicLineChart /></el-col>
+    <el-col :span="16"><BasicLineChart :series="lineSeries" /></el-col>
   </el-row>
 </template>
 
