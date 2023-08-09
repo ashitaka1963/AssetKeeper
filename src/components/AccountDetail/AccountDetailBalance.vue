@@ -49,6 +49,7 @@ const lineSeries = computed((): any => {
   return series;
 });
 
+// TODO:latestBalance使用検討
 const formattedNumber = computed((): string => {
   const latestBalance =
     account.value.balances.history.length != 0
@@ -211,12 +212,6 @@ function isPositive(value: number): boolean {
 <style scoped>
 * {
   color: #fefefe;
-}
-.container {
-  margin-top: 20px;
-  background-color: #30343d;
-  padding: 30px 40px;
-  border-radius: 4px;
 }
 
 .margin-top {

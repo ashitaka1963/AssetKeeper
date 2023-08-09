@@ -116,10 +116,4 @@ const options = computed((): any => {
   <apexchart height="250" type="donut" :options="options" :series="props.series"></apexchart>
 </template>
 
-<style scoped>
-.container {
-  background-color: #30343d;
-  padding: 30px 40px;
-  border-radius: 4px;
-}
-</style>
+<style scoped></style>

@@ -14,6 +14,7 @@ const usersStore = useUsersStore();
 const isTop = ref(true);
 const isDialogVisible = ref(false);
 const isEdit = ref(true);
+
 let form: any = reactive({
   _id: null,
   userName: '',
@@ -103,15 +104,13 @@ watch(isDialogVisible, (value) => {
       <el-row>
         <el-col :span="24">
           <el-table :data="usersStore.users" style="width: 100%">
-            <!-- <el-table-column prop="_id" label="ID" width="180" /> -->
             <el-table-column prop="userName" label="Name" />
             <el-table-column prop="email" label="E-mail" />
             <el-table-column prop="role" label="Role" />
-
             <el-table-column prop="color" label="Color">
               <template #default="scope">
                 <el-color-picker v-model="scope.row.color" />
-                <span class="margin-left">{{ scope.row.color }}</span>
+                <span>{{ scope.row.color }}</span>
               </template>
             </el-table-column>
             <el-table-column width="120">
@@ -122,7 +121,7 @@ watch(isDialogVisible, (value) => {
                     isDialogVisible = true;
                     isEdit = false;
                   "
-                  >Add Item</el-button
+                  >Add User</el-button
                 >
               </template>
               <template #default="scope">
@@ -147,17 +146,8 @@ watch(isDialogVisible, (value) => {
       </el-row>
     </div>
     <!-- dialog -->
-    <el-dialog
-      v-model="isDialogVisible"
-      :title="dialogTitle"
-      width="30%"
-      align-center
-      class="dialog"
-    >
+    <el-dialog v-model="isDialogVisible" :title="dialogTitle" width="30%" align-center>
       <el-form :model="form" label-width="80px">
-        <!-- <el-form-item v-if="isEdit" label="Id">
-          {{ form._id }}
-        </el-form-item> -->
         <el-form-item label="Name">
           <el-input v-model="form.userName" />
         </el-form-item>
@@ -179,7 +169,7 @@ watch(isDialogVisible, (value) => {
         </el-form-item>
         <el-form-item label="Color">
           <el-color-picker v-model="form.color" />
-          <span class="margin-left">{{ form.color }}</span>
+          <span>{{ form.color }}</span>
         </el-form-item>
 
         <el-form-item>
@@ -195,38 +185,7 @@ watch(isDialogVisible, (value) => {
 * {
   color: #fefefe;
 }
-
-li.el-select-dropdown__item > span {
-  color: red !important;
-}
-
-.container {
-  margin-top: 20px;
-  background-color: #30343d;
-  padding: 30px 40px;
-  border-radius: 4px;
-  margin-bottom: 30px;
-}
-
-.dialog {
-  background-color: #30343d;
-}
-
-.dialog-footer button:first-child {
-  margin-right: 10px;
-}
-
-.main-icon-button {
-  border-color: #c7a780;
-  color: #c0b09d;
-}
-
-.sub-icon-button {
-  border-color: #6fd4c3;
-  color: #6fd4c3;
-}
-
-.margin-left {
+.el-color-picker + span {
   margin-left: 8px;
 }
 </style>

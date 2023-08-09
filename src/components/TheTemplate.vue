@@ -7,10 +7,4 @@
   </el-row>
 </template>
 
-<style scoped>
-.container {
-  background-color: #30343d;
-  padding: 30px 40px;
-  border-radius: 4px;
-}
-</style>
+<style scoped></style>

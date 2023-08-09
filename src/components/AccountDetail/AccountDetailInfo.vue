@@ -58,12 +58,6 @@ console.log(account);
   color: #fefefe;
 }
 
-.container {
-  background-color: #30343d;
-  padding: 30px 40px;
-  border-radius: 4px;
-}
-
 .black-text {
   color: #9496a0;
 }

@@ -66,12 +66,6 @@ const lineSeriesPerUser = computed((): any => {
 * {
   color: #fefefe;
 }
-.container {
-  margin-top: 20px;
-  background-color: #30343d;
-  padding: 40px 40px;
-  border-radius: 4px;
-}
 
 .margin-top {
   margin-top: 30px;

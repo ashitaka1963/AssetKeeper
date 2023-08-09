@@ -1,0 +1,75 @@
+.theme-color {
+  color: #c7a780;
+  color: #6fd4c3;
+  color: #9496a0;
+
+  /* 背景色 */
+  color: #30343d;
+
+  /* エリア */
+  color: #30343d;
+
+  color: #7c808e;
+}
+
+.container {
+  margin-top: 20px;
+  background-color: #30343d;
+  padding: 30px 40px;
+  border-radius: 4px;
+}
+
+/* table */
+.el-table {
+  /* --el-table-border-color: #9496a0 !important; */
+  --el-table-border-color: #4c515f !important;
+  --el-table-tr-bg-color: #30343d !important;
+  --el-table-header-bg-color: #30343d !important;
+  --el-table-row-hover-bg-color: #4c515f !important;
+  --el-table-bg-color: none !important;
+}
+
+/* dialog */
+.el-dialog__title {
+  color: #9496a0 !important;
+}
+
+.el-dialog {
+  /* --el-dialog-width: 50%;
+    --el-dialog-margin-top: 15vh;
+    --el-dialog-bg-color: var(--el-bg-color);
+    --el-dialog-box-shadow: var(--el-box-shadow);
+    --el-dialog-title-font-size: var(--el-font-size-large);
+    --el-dialog-content-font-size: 14px;
+    --el-dialog-font-line-height: var(--el-font-line-height-primary);
+    --el-dialog-padding-primary: 20px;
+    --el-dialog-border-radius: var(--el-border-radius-small);
+    position: relative;
+    margin: var(--el-dialog-margin-top,15vh) auto 50px;
+    background: var(--el-dialog-bg-color);
+    border-radius: var(--el-dialog-border-radius);
+    box-shadow: var(--el-dialog-box-shadow);
+    box-sizing: border-box;
+    width: var(--el-dialog-width,50%); */
+  --el-dialog-bg-color: #2a2e36 !important;
+}
+
+.dialog-footer button:first-child {
+  margin-right: 10px;
+}
+
+/* icon button */
+.main-icon-button {
+  border-color: #c7a780 !important;
+  color: #c0b09d !important;
+}
+
+.sub-icon-button {
+  border-color: #6fd4c3 !important;
+  color: #6fd4c3 !important;
+}
+
+/* select */
+li.el-select-dropdown__item > span {
+  color: #7c808e !important;
+}

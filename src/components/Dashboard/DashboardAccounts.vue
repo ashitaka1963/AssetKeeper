@@ -245,26 +245,8 @@ watch(isDialogVisible, (value) => {
   color: #fefefe;
 }
 
-.container {
-  margin-top: 20px;
-  background-color: #30343d;
-  padding: 30px 40px;
-  border-radius: 4px;
-  margin-bottom: 30px;
-}
-
 .background-color-black {
   background-color: #30343d;
-}
-
-.main-icon-button {
-  border-color: #c7a780;
-  color: #c0b09d;
-}
-
-.sub-icon-button {
-  border-color: #6fd4c3;
-  color: #6fd4c3;
 }
 
 .normal-icon-button {

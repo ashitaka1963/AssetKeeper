@@ -80,10 +80,4 @@ const options = ref(optionsInit);
   <apexchart height="250" type="line" :options="options" :series="props.series"></apexchart>
 </template>
 
-<style scoped>
-.container {
-  background-color: #30343d;
-  padding: 30px 40px;
-  border-radius: 4px;
-}
-</style>
+<style scoped></style>

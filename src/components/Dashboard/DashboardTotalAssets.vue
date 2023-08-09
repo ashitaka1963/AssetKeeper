@@ -225,11 +225,6 @@ function isPositive(value: number): boolean {
 * {
   color: #fefefe;
 }
-.container {
-  background-color: #30343d;
-  padding: 30px 40px;
-  border-radius: 4px;
-}
 
 .margin-top {
   margin-top: 50px;

@@ -19,9 +19,6 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: #fefefe;
-
-  /* --el-text-color: #fefefe; */
-  /* color: #fefefe; */
 }
 
 /* semantic color variables for this project */
@@ -53,14 +50,6 @@
   }
 }
 
-/* *,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  font-weight: normal;
-} */
-
 body {
   min-height: 100vh;
   color: var(--color-text);
@@ -75,67 +64,4 @@ body {
   -moz-osx-font-smoothing: grayscale;
   margin-top: 0px;
   margin-left: 0px;
-}
-
-/* table */
-.el-table {
-  /* --el-table-border-color: #9496a0 !important; */
-  --el-table-border-color: #4c515f !important;
-  --el-table-tr-bg-color: #30343d !important;
-  --el-table-header-bg-color: #30343d !important;
-  --el-table-row-hover-bg-color: #4c515f !important;
-  --el-table-bg-color: none !important;
-}
-
-/* dialog */
-.el-dialog {
-  /* --el-dialog-width: 50%;
-  --el-dialog-margin-top: 15vh;
-  --el-dialog-bg-color: var(--el-bg-color);
-  --el-dialog-box-shadow: var(--el-box-shadow);
-  --el-dialog-title-font-size: var(--el-font-size-large);
-  --el-dialog-content-font-size: 14px;
-  --el-dialog-font-line-height: var(--el-font-line-height-primary);
-  --el-dialog-padding-primary: 20px;
-  --el-dialog-border-radius: var(--el-border-radius-small);
-  position: relative;
-  margin: var(--el-dialog-margin-top,15vh) auto 50px;
-  background: var(--el-dialog-bg-color);
-  border-radius: var(--el-dialog-border-radius);
-  box-shadow: var(--el-dialog-box-shadow);
-  box-sizing: border-box;
-  width: var(--el-dialog-width,50%); */
-  --el-dialog-bg-color: #2a2e36 !important;
-}
-
-.el-dialog__title {
-  /* line-height: var(--el-dialog-font-line-height);
-  font-size: var(--el-dialog-title-font-size); */
-  color: #9496a0 !important;
-}
-
-/* button */
-/* .el-button.is-circle {
-  border-color: #c7a780;
-
-  border-width: 2px;
-} */
-
-/* select */
-li.el-select-dropdown__item > span {
-  color: #7c808e !important;
-}
-
-.theme-color {
-  color: #c7a780;
-  color: #6fd4c3;
-  color: #9496a0;
-
-  /* 背景色 */
-  color: #30343d;
-
-  /* エリア */
-  color: #30343d;
-
-  color: #7c808e;
 }
