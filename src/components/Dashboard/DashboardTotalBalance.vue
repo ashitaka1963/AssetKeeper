@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useAccountsStore } from '@/stores/accounts';
 import StackedColumnsChart from '../Charts/StackedColumnsChart.vue';
+import { addPlusSign, calculateIncreaseRatio, isPositive } from '@/utils/commonUtils';
 
 const accountsStore = useAccountsStore();
+const year = 2023; //TODO:2023年固定
 
 // ========================================
 // Computed
@@ -15,8 +17,6 @@ const accounts = computed((): any => {
 
 const lineSeries = computed((): any => {
   const series: any = [];
-
-  const year = 2023; //TODO:2023年固定
 
   accounts.value.forEach((account: any) => {
     const monthlyData: any = [];
@@ -41,6 +41,18 @@ const lineSeries = computed((): any => {
   return series;
 });
 
+const xaxisCategories = computed((): any => {
+  const categories: any = [];
+  for (let month = 1; month <= 12; month++) {
+    const monthString = month.toString().padStart(2, '0');
+    const date = dayjs(`${year}-${monthString}-01`);
+    categories.push(date.format('YYYY/MM'));
+  }
+
+  return categories;
+});
+
+// 総資産
 const totalAmount = computed((): any => {
   let totalAmount = 0;
 
@@ -86,16 +98,8 @@ const prevYearAmount = computed((): number => {
     prevYearAmount += balanceAmount;
   });
 
-  // const prevYear = dayjs().subtract(1, 'year');
-  // const balanceHistory = account.value.balances.history;
-  // const prevYearAmount = findSameDate(balanceHistory, prevYear, 'month');
-
   return prevYearAmount;
 });
-
-// const formattedNumber = computed((): string => {
-//   return totalAmount.value.toLocaleString();
-// });
 
 const previousMonthComparison = computed((): string => {
   return addPlusSign(currentMonthAmount.value - prevMonthAmount.value);
@@ -124,32 +128,6 @@ function findSameDate(balanceHistory: Array<T>, targetDate: any, unit: dayjs.OpU
 
   return foundData ? foundData.balanceAmount : 0;
 }
-
-function addPlusSign(number: number) {
-  if (typeof number === 'number' && Number.isInteger(number)) {
-    return number >= 0 ? `+${number.toLocaleString()}` : `${number.toLocaleString()}`;
-  } else {
-    throw new Error('Invalid input. Please provide an integer.');
-  }
-}
-
-function calculateIncreaseRatio(currentValue: number, previousValue: number) {
-  if (typeof previousValue === 'number' && typeof currentValue === 'number') {
-    const increase = currentValue - previousValue;
-    // const ratio = (increase / previousValue) * 100;
-    const ratio = previousValue !== 0 ? (increase / previousValue) * 100 : 0;
-    const formattedRatio = ratio >= 0 ? `+${ratio.toFixed(1)}` : `${ratio.toFixed(1)}`;
-    return formattedRatio;
-  } else {
-    throw new Error(
-      'Invalid input. Please provide valid numbers for the previous and current values.'
-    );
-  }
-}
-
-function isPositive(value: number): boolean {
-  return value > 0;
-}
 </script>
 
 <template>
@@ -163,21 +141,24 @@ function isPositive(value: number): boolean {
       <el-row>
         <el-col :span="24">
           <el-text tag="p" size="large">
-            ￥ <el-text tag="span" class="emphasis">{{ totalAmount.toLocaleString() }}</el-text>
+            ￥
+            <el-text tag="span" class="text-primary large-text">{{
+              totalAmount.toLocaleString()
+            }}</el-text>
           </el-text>
         </el-col>
       </el-row>
       <el-row class="margin-top"><el-text tag="p" size="large">比率</el-text> </el-row>
       <el-row>
         <el-col :span="4" :offset="2">
-          <el-text tag="span" size="small" class="black-text">前月比 </el-text>
+          <el-text tag="span" size="small" class="text-muted">前月比 </el-text>
         </el-col>
         <el-col :span="18">
           <el-text
             tag="span"
             size="large"
             v-bind:class="
-              isPositive(currentMonthAmount - prevMonthAmount) ? 'positive-text' : 'negative-text'
+              isPositive(currentMonthAmount - prevMonthAmount) ? 'text-accent' : 'text-primary'
             "
             >{{ previousMonthComparison }}</el-text
           >
@@ -185,7 +166,7 @@ function isPositive(value: number): boolean {
           <el-text
             tag="span"
             v-bind:class="
-              isPositive(currentMonthAmount - prevMonthAmount) ? 'positive-text' : 'negative-text'
+              isPositive(currentMonthAmount - prevMonthAmount) ? 'text-accent' : 'text-primary'
             "
             >{{ previousMonthRatio }}%</el-text
           >
@@ -194,14 +175,14 @@ function isPositive(value: number): boolean {
       </el-row>
       <el-row>
         <el-col :span="4" :offset="2">
-          <el-text tag="span" size="small" class="black-text">前年比</el-text>
+          <el-text tag="span" size="small" class="text-muted">前年比</el-text>
         </el-col>
         <el-col :span="18">
           <el-text
             tag="span"
             size="large"
             v-bind:class="
-              isPositive(currentMonthAmount - prevYearAmount) ? 'positive-text' : 'negative-text'
+              isPositive(currentMonthAmount - prevYearAmount) ? 'text-accent' : 'text-primary'
             "
             >{{ previousYearComparison }}</el-text
           >
@@ -209,7 +190,7 @@ function isPositive(value: number): boolean {
           <el-text
             tag="span"
             v-bind:class="
-              isPositive(currentMonthAmount - prevYearAmount) ? 'positive-text' : 'negative-text'
+              isPositive(currentMonthAmount - prevYearAmount) ? 'text-accent' : 'text-primary'
             "
             >{{ previousYearRatio }}%</el-text
           >
@@ -217,7 +198,9 @@ function isPositive(value: number): boolean {
         </el-col>
       </el-row>
     </el-col>
-    <el-col :span="16"><StackedColumnsChart :series="lineSeries" /></el-col>
+    <el-col :span="16"
+      ><StackedColumnsChart :series="lineSeries" :xaxis="xaxisCategories"
+    /></el-col>
   </el-row>
 </template>
 
@@ -229,24 +212,4 @@ function isPositive(value: number): boolean {
 .margin-top {
   margin-top: 50px;
 }
-.emphasis {
-  font-size: 40px;
-  color: #c7a780;
-  /* text-size */
-}
-
-.black-text {
-  color: #9496a0;
-}
-
-.positive-text {
-  color: #6fd4c3;
-}
-
-.negative-text {
-  color: #c7a780;
-}
-
-/* mainColor:#C7A780 */
-/* 6fd4c3 */
 </style>

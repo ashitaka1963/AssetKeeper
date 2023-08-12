@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import { useUsersStore } from '@/stores/users';
 import { useAccountsStore } from '@/stores/accounts';
 import DonutChart from '../Charts/DonutChart.vue';
@@ -26,8 +26,6 @@ const lineSeriesPerUser = computed((): any => {
     const filterAccounts = accounts.value.filter((account: any) => {
       return account.ownerId == userId;
     });
-
-    console.log(filterAccounts);
 
     let series: Array<number> = [];
     let labels: Array<string> = [];
@@ -68,6 +66,7 @@ const lineSeriesPerUser = computed((): any => {
 }
 
 .margin-top {
+  margin-left: 30px;
   margin-top: 30px;
 }
 </style>

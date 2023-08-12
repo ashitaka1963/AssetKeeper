@@ -19,6 +19,23 @@
   border-radius: 4px;
 }
 
+/* text */
+.text-primary {
+  color: #c7a780 !important;
+}
+
+.text-accent {
+  color: #6fd4c3 !important;
+}
+
+.text-muted {
+  color: #9496a0 !important;
+}
+
+.large-text {
+  font-size: 40px !important;
+}
+
 /* table */
 .el-table {
   /* --el-table-border-color: #9496a0 !important; */
@@ -67,6 +84,11 @@
 .sub-icon-button {
   border-color: #6fd4c3 !important;
   color: #6fd4c3 !important;
+}
+
+.normal-icon-button {
+  border-color: #909399 !important;
+  color: #909399 !important;
 }
 
 /* select */

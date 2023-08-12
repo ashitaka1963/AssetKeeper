@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 
 interface Props {
   series: object;
@@ -112,7 +112,6 @@ const options = computed((): any => {
 </script>
 
 <template>
-  <!-- <apexchart width="500" type="bar" :options="options" :series="series"></apexchart> -->
   <apexchart height="250" type="donut" :options="options" :series="props.series"></apexchart>
 </template>
 

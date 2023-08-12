@@ -4,10 +4,12 @@ import { ref, computed } from 'vue';
 
 interface Props {
   series: object;
+  xaxis: Array<string>;
 }
 
 const props = defineProps<Props>();
 
+// TODO:見直し
 window.Apex = {
   chart: {
     foreColor: '#ccc',
@@ -100,20 +102,15 @@ const optionsInit: any = {
   }
 };
 
-const year = 2023; //TODO:2023年固定
-const xaxis: any = [];
-for (let month = 1; month <= 12; month++) {
-  const monthString = month.toString().padStart(2, '0');
-  const date = dayjs(`${year}-${monthString}-01`);
-  xaxis.push(date.format('YYYY/MM'));
-}
+const options = computed((): any => {
+  const option = optionsInit;
+  option.xaxis = { categories: props.xaxis };
 
-optionsInit.xaxis = { categories: xaxis };
-const options = ref(optionsInit);
+  return option;
+});
 </script>
 
 <template>
-  <!-- <apexchart width="500" type="bar" :options="options" :series="series"></apexchart> -->
   <apexchart height="250" type="bar" :options="options" :series="props.series"></apexchart>
 </template>
 

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 // import HomeView from '../views/HomeView.vue';
 import DashboardView from '../views/DashboardView.vue';
-import AccountDetailView from '../views/AccountDetailView.vue';
+import AccountView from '../views/AccountView.vue';
 import UsersView from '../views/UsersView.vue';
 
 const router = createRouter({
@@ -13,9 +13,9 @@ const router = createRouter({
       component: DashboardView
     },
     {
-      path: '/AccountDetailView/:id',
-      name: 'AccountDetailView',
-      component: AccountDetailView,
+      path: '/AccountView/:id',
+      name: 'AccountView',
+      component: AccountView,
       props: (routes) => {
         // const idNunm = Number(routes.params.id);
         // return {

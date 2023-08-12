@@ -53,14 +53,6 @@ const dialogButtonName = computed((): any => {
 });
 
 const accounts = computed((): any => {
-  // accountsStore.accounts.forEach((account: any) => {
-  //   const latestDate = account.balances.latestDate;
-  //   if (latestDate) {
-  //     account.balances.latestDate = dayjs(latestDate).format('YYYY/MM/DD');
-  //   } else {
-  //     account.balances.latestDate = '-';
-  //   }
-  // });
   return accountsStore.accounts;
 });
 
@@ -72,8 +64,8 @@ const users = computed((): any => {
 // Methods
 // ========================================
 
-function goToAccountDetailView(accountId: string) {
-  router.push({ name: 'AccountDetailView', params: { id: accountId } });
+function goToAccountView(accountId: string) {
+  router.push({ name: 'AccountView', params: { id: accountId } });
 }
 
 function editDialogOpen(accountId: string) {
@@ -172,7 +164,7 @@ watch(isDialogVisible, (value) => {
               <el-button
                 class="normal-icon-button"
                 color="#30343d"
-                @click="goToAccountDetailView(scope.row._id)"
+                @click="goToAccountView(scope.row._id)"
                 :icon="Search"
                 circle
               ></el-button>
@@ -205,9 +197,6 @@ watch(isDialogVisible, (value) => {
       class="dialog"
     >
       <el-form :model="form" label-width="80px">
-        <!-- <el-form-item v-if="isEdit" label="Id">
-          {{ form._id }}
-        </el-form-item> -->
         <el-form-item label="Name">
           <el-input v-model="form.accountName" />
         </el-form-item>
@@ -243,14 +232,5 @@ watch(isDialogVisible, (value) => {
 <style scoped>
 * {
   color: #fefefe;
-}
-
-.background-color-black {
-  background-color: #30343d;
-}
-
-.normal-icon-button {
-  border-color: #909399;
-  color: #909399;
 }
 </style>

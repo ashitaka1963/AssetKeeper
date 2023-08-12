@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import PageHeader from '../components/PageHeader.vue';
-import DashboardTotalAssets from '../components/Dashboard/DashboardTotalAssets.vue';
-import DashboardDonut from '../components/Dashboard/DashboardDonut.vue';
+import DashboardTotalBalance from '../components/Dashboard/DashboardTotalBalance.vue';
+import DashboardGroupBalance from '../components/Dashboard/DashboardGroupBalance.vue';
 import DashboardAccounts from '../components/Dashboard/DashboardAccounts.vue';
 
 import { useAccountsStore } from '@/stores/accounts';
@@ -35,8 +35,8 @@ function getUsers() {
 <template>
   <main>
     <PageHeader headerName="Dashboard" :isTop="isTop" />
-    <DashboardTotalAssets />
-    <DashboardDonut />
+    <DashboardTotalBalance />
+    <DashboardGroupBalance />
     <DashboardAccounts />
   </main>
 </template>
