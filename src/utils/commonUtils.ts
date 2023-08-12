@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 // 整数値の場合、先頭に「+」を付与する
 export function addPlusSign(number: number) {
   if (typeof number === 'number' && Number.isInteger(number)) {
@@ -25,4 +27,18 @@ export function calculateIncreaseRatio(currentValue: number, previousValue: numb
 // 0より大きい場合、trueを返す
 export function isPositive(value: number): boolean {
   return value > 0;
+}
+
+// 残高履歴一覧から日付が一致する残額を取得する
+export function findSameDate(
+  balanceHistory: Object<T>,
+  targetDate: any,
+  unit: dayjs.OpUnitType
+): number {
+  const foundData = balanceHistory.find((item: any) => {
+    const balanceDate = dayjs(item.balanceDate);
+    return balanceDate.isSame(targetDate, unit);
+  });
+
+  return foundData ? foundData.balanceAmount : 0;
 }

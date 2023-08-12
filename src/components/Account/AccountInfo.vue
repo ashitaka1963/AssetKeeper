@@ -22,21 +22,19 @@ const account = computed((): any => {
 const userName = computed((): any => {
   return usersStore.getById(account.value.ownerId).userName;
 });
-
-console.log(account);
 </script>
 
 <template>
   <div class="container">
     <el-row>
       <el-col :span="8">
-        <el-text tag="p" class="black-text">Name</el-text>
+        <el-text tag="p" class="text-muted">Name</el-text>
       </el-col>
       <el-col :span="8">
-        <el-text tag="p" class="black-text">Type</el-text>
+        <el-text tag="p" class="text-muted">Type</el-text>
       </el-col>
       <el-col :span="8">
-        <el-text tag="p" class="black-text">Owner</el-text>
+        <el-text tag="p" class="text-muted">Owner</el-text>
       </el-col>
     </el-row>
     <el-row>
@@ -56,9 +54,5 @@ console.log(account);
 <style scoped>
 * {
   color: #fefefe;
-}
-
-.black-text {
-  color: #9496a0;
 }
 </style>

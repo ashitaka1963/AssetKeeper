@@ -5,7 +5,7 @@
 import dayjs from 'dayjs';
 import { ref, reactive, computed, watch } from 'vue';
 
-import { useAccountsStore } from '@/stores/accounts';
+import { useBalancesStore } from '@/stores/balances';
 import { Delete, Edit } from '@element-plus/icons-vue';
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const accountsStore = useAccountsStore();
+const balancesStore = useBalancesStore();
 
 const isDialogVisible = ref(false);
 const isEdit = ref(true);
@@ -37,8 +37,8 @@ let defaultForm: any = {
 // ========================================
 // Computed
 // ========================================
-const account = computed((): any => {
-  return accountsStore.getById(props.accountId);
+const balances = computed((): any => {
+  return balancesStore.balances;
 });
 
 const dialogTitle = computed((): any => {
@@ -52,21 +52,21 @@ const dialogButtonName = computed((): any => {
 // ========================================
 // Methods
 // ========================================
-function editDialogOpen(index: number) {
+function editDialogOpen(balanceId: string) {
   isDialogVisible.value = !isDialogVisible.value;
   isEdit.value = true;
-  Object.assign(form, account.value.balances.history[index]);
+  Object.assign(form, balancesStore.getById(balanceId));
 }
 
-function deleteBalance(index: number) {
-  accountsStore.deleteBalanceHistory(props.accountId, account.value.balances.history[index]);
+function deleteBalance(balanceId: string) {
+  balancesStore.deleteBalance(balanceId);
 }
 
 function saveBalance() {
   if (isEdit.value) {
-    accountsStore.editBalanceHistory(props.accountId, { ...form });
+    balancesStore.editBalance({ ...form });
   } else {
-    accountsStore.addBalanceHistory(props.accountId, { ...form });
+    balancesStore.addBalance({ ...form });
   }
   isDialogVisible.value = !isDialogVisible.value;
 }
@@ -87,17 +87,8 @@ watch(isDialogVisible, (value) => {
       </el-col>
     </el-row>
     <el-row>
-      <!-- <el-text tag="p" size="large">総資産</el-text> -->
       <el-col :span="24">
-        <el-table :data="account.balances.history" style="width: 100%">
-          <!-- <el-table-column prop="date" label="Date" width="180" /> -->
-          <!-- <el-table-column prop="user" label="User" width="80">
-            <template #default="scope">
-              <el-avatar :style="{ backgroundColor: getColor(scope.row.user, scope.$index) }">
-                {{ scope.row.user[0].toUpperCase() }}
-              </el-avatar>
-            </template>
-          </el-table-column> -->
+        <el-table :data="balances" style="width: 100%">
           <el-table-column prop="balanceDate" label="対象月" width="180">
             <template #default="scope"
               >{{ scope.row.balanceDate ? dayjs(scope.row.balanceDate).format('YYYY/MM/DD') : '-' }}
@@ -123,14 +114,14 @@ watch(isDialogVisible, (value) => {
               <el-button
                 class="main-icon-button"
                 color="#30343d"
-                @click="editDialogOpen(scope.$index)"
+                @click="editDialogOpen(scope.row._id)"
                 :icon="Edit"
                 circle
               ></el-button>
               <el-button
                 class="sub-icon-button"
                 color="#30343d"
-                @click="deleteBalance(scope.$index)"
+                @click="deleteBalance(scope.row._id)"
                 :icon="Delete"
                 circle
               ></el-button>
@@ -171,7 +162,6 @@ watch(isDialogVisible, (value) => {
       </el-form-item>
     </el-form>
   </el-dialog>
-  <!-- {{ account.balances.history }} -->
 </template>
 
 <style scoped>

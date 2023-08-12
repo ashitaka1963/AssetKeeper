@@ -3,7 +3,7 @@ import dayjs from 'dayjs';
 import { computed } from 'vue';
 import { useAccountsStore } from '@/stores/accounts';
 import StackedColumnsChart from '../Charts/StackedColumnsChart.vue';
-import { addPlusSign, calculateIncreaseRatio, isPositive } from '@/utils/commonUtils';
+import { addPlusSign, calculateIncreaseRatio, isPositive, findSameDate } from '@/utils/commonUtils';
 
 const accountsStore = useAccountsStore();
 const year = 2023; //TODO:2023年固定
@@ -116,18 +116,6 @@ const previousYearComparison = computed((): string => {
 const previousYearRatio = computed((): string => {
   return calculateIncreaseRatio(currentMonthAmount.value, prevYearAmount.value);
 });
-
-// ========================================
-// Methods
-// ========================================
-function findSameDate(balanceHistory: Array<T>, targetDate: any, unit: dayjs.OpUnitType): number {
-  const foundData = balanceHistory.find((item: any) => {
-    const balanceDate = dayjs(item.balanceDate);
-    return balanceDate.isSame(targetDate, unit);
-  });
-
-  return foundData ? foundData.balanceAmount : 0;
-}
 </script>
 
 <template>
