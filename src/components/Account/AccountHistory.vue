@@ -1,12 +1,13 @@
 <script setup lang="ts">
-// TODO:メッセージ表示
-// TODO:前月差分計算
+// TODO:ローディング
 // TODO:バリデーション（重複登録チェック、数値）
 import dayjs from 'dayjs';
 import { ref, reactive, computed, watch } from 'vue';
 
 import { useBalancesStore } from '@/stores/balances';
 import { Delete, Edit } from '@element-plus/icons-vue';
+
+import { addPlusSign, findSameDate } from '@/utils/commonUtils';
 
 interface Props {
   accountId: string;
@@ -38,7 +39,27 @@ let defaultForm: any = {
 // Computed
 // ========================================
 const balances = computed((): any => {
-  return balancesStore.balances;
+  const result: any = [];
+  if (balancesStore.balances.length == 0) return result;
+
+  // 差分計算
+  for (let i = 0; i < balancesStore.balances.length - 1; i++) {
+    const currentMonthData = balancesStore.balances[i];
+    const currentAmount = currentMonthData.balanceAmount;
+    const prevAmount = balancesStore.balances[i + 1].balanceAmount;
+
+    const diff = currentAmount - prevAmount;
+    result.push({
+      ...currentMonthData,
+      diff,
+      diffColor: diff > 0 ? 'text-accent' : 'text-primary'
+    });
+  }
+
+  const lastMonthData = balancesStore.balances[balancesStore.balances.length - 1];
+  result.push({ ...lastMonthData, diff: lastMonthData.balanceAmount, diffColor: 'text-accent' });
+
+  return result;
 });
 
 const dialogTitle = computed((): any => {
@@ -97,7 +118,13 @@ watch(isDialogVisible, (value) => {
           <el-table-column prop="balanceAmount" label="残高">
             <template #default="scope">￥ {{ scope.row.balanceAmount.toLocaleString() }} </template>
           </el-table-column>
-          <el-table-column label="前月差分">￥ 999</el-table-column>
+          <el-table-column label="差分">
+            <template #default="scope">
+              <el-text tag="span" size="large" v-bind:class="scope.row.diffColor">{{
+                addPlusSign(scope.row.diff)
+              }}</el-text>
+            </template>
+          </el-table-column>
           <el-table-column prop="memo" label="メモ" />
           <el-table-column width="120">
             <template #header>
