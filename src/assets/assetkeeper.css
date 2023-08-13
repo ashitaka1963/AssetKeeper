@@ -95,3 +95,8 @@
 li.el-select-dropdown__item > span {
   color: #7c808e !important;
 }
+
+/* color-picker */
+.el-color-picker__mask {
+  background-color: transparent !important;
+}

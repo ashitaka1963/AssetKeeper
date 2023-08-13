@@ -1,7 +1,6 @@
 <script setup lang="ts">
 // TODO:Loading
 // TODO:バリデーション（重複登録チェック、数値）
-// TODO:一覧でカラーピッカーを変更できないようにする
 
 import { ref, reactive, computed, watch } from 'vue';
 
@@ -109,7 +108,7 @@ watch(isDialogVisible, (value) => {
             <el-table-column prop="role" label="Role" />
             <el-table-column prop="color" label="Color">
               <template #default="scope">
-                <el-color-picker v-model="scope.row.color" />
+                <el-color-picker v-model="scope.row.color" disabled />
                 <span>{{ scope.row.color }}</span>
               </template>
             </el-table-column>
