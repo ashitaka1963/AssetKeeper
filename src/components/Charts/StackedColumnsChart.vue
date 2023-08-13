@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import dayjs from 'dayjs';
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 
 interface Props {
   series: object;
@@ -9,48 +8,17 @@ interface Props {
 
 const props = defineProps<Props>();
 
-// TODO:見直し
-window.Apex = {
+const optionsInit: any = {
   chart: {
-    foreColor: '#ccc',
+    type: 'bar',
+    stacked: true,
+    foreColor: '#9496a0',
     toolbar: {
       show: false
     },
     zoom: {
       enabled: false
     }
-  },
-  //   stroke: {
-  //     width: 3
-  //   },
-  dataLabels: {
-    enabled: false
-  },
-  tooltip: {
-    theme: 'dark'
-  },
-  grid: {
-    borderColor: '#9496a0',
-    xaxis: {
-      lines: {
-        show: false
-      }
-    },
-    yaxis: {
-      lines: {
-        show: true
-      }
-    }
-  }
-};
-
-const optionsInit: any = {
-  chart: {
-    type: 'bar',
-    stacked: true
-    // toolbar: {
-    //   show: false
-    // }
   },
   responsive: [
     {
@@ -64,6 +32,12 @@ const optionsInit: any = {
       }
     }
   ],
+  tooltip: {
+    theme: 'dark'
+  },
+  dataLabels: {
+    enabled: false
+  },
   plotOptions: {
     bar: {
       horizontal: false
@@ -79,11 +53,29 @@ const optionsInit: any = {
       //   }
     }
   },
-  // xaxis: {
-  //   // type: 'category'
-  //   // type: 'datetime',
-  //   // categories: ['2023/02', '2023/03', '2023/04', '2023/05', '2023/06', '2023/07']
-  // },
+  grid: {
+    show: true,
+    borderColor: '#4c515f',
+    xaxis: {
+      lines: {
+        show: false
+      }
+    },
+    yaxis: {
+      lines: {
+        show: true
+      }
+    }
+  },
+  xaxis: {
+    type: 'category',
+    axisBorder: {
+      show: false
+    },
+    axisTicks: {
+      show: false
+    }
+  },
   legend: {
     position: 'top',
     labels: {
@@ -93,18 +85,16 @@ const optionsInit: any = {
     markers: {
       fillColors: ['#c7a780', '#E7DFD6', '#4A4F5E', '#6fd4c3']
     }
-    // offsetY: 40
   },
 
   fill: {
-    // opacity: 1,
     colors: ['#c7a780', '#E7DFD6', '#4A4F5E', '#6fd4c3']
   }
 };
 
 const options = computed((): any => {
   const option = optionsInit;
-  option.xaxis = { categories: props.xaxis };
+  option.xaxis.categories = props.xaxis;
 
   return option;
 });

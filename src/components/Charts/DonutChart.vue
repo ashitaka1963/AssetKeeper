@@ -8,40 +8,10 @@ interface Props {
 
 const props = defineProps<Props>();
 
-// window.Apex = {
-//   chart: {
-//     foreColor: '#ccc',
-//     toolbar: {
-//       show: false
-//     }
-//   },
-//   //   stroke: {
-//   //     width: 3
-//   //   },
-//   dataLabels: {
-//     enabled: false
-//   },
-//   tooltip: {
-//     theme: 'dark'
-//   },
-//   grid: {
-//     borderColor: '#535A6C',
-//     xaxis: {
-//       lines: {
-//         show: false
-//       }
-//     },
-//     yaxis: {
-//       lines: {
-//         show: true
-//       }
-//     }
-//   }
-// };
-
 const optionsInit: any = {
   chart: {
-    type: 'donut'
+    type: 'donut',
+    foreColor: '#ccc'
   },
   responsive: [
     {
@@ -55,12 +25,9 @@ const optionsInit: any = {
       }
     }
   ],
-  // dataLabels: {
-  //   enabled: true,
-  //   formatter: function (val) {
-  //     return val + '%';
-  //   }
-  // },
+  dataLabels: {
+    enabled: false
+  },
   plotOptions: {
     pie: {
       donut: {
@@ -76,7 +43,7 @@ const optionsInit: any = {
       }
     }
   },
-  colors: '#7c808e',
+  colors: '#7c808e', // tooltip背景色
   stroke: {
     width: 0
   },
@@ -84,7 +51,6 @@ const optionsInit: any = {
     enabled: true,
     theme: 'dark'
   },
-
   legend: {
     position: 'bottom',
     labels: {
@@ -94,11 +60,8 @@ const optionsInit: any = {
     markers: {
       fillColors: ['#c7a780', '#E7DFD6', '#4A4F5E', '#6fd4c3']
     }
-    // offsetY: 40
   },
-
   fill: {
-    // opacity: 1,
     colors: ['#c7a780', '#E7DFD6', '#4A4F5E', '#6fd4c3']
   }
 };
