@@ -100,3 +100,13 @@ li.el-select-dropdown__item > span {
 .el-color-picker__mask {
   background-color: transparent !important;
 }
+
+/* loading */
+.el-loading-text {
+  color: #6fd4c3 !important;
+  font-size: 18px !important;
+}
+
+.el-loading-spinner > svg > circle {
+  stroke: #6fd4c3 !important;
+}
