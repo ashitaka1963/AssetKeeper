@@ -7,6 +7,8 @@ import AccountInfo from '../components/Account/AccountInfo.vue';
 import AccountBalance from '../components/Account/AccountBalance.vue';
 import AccountHistory from '../components/Account/AccountHistory.vue';
 
+import loadingUtils from '../CustomLoading';
+
 const balancesStore = useBalancesStore();
 
 const isTop = ref(false);
@@ -22,7 +24,11 @@ init();
 // Methods
 // ========================================
 async function init() {
+  loadingUtils.startLoading();
+
   await getBalancesByAccountId();
+
+  loadingUtils.closeLoading();
 }
 
 function getBalancesByAccountId() {

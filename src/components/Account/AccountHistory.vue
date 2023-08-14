@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// TODO:ローディング
 // TODO:バリデーション（重複登録チェック、数値）
 import dayjs from 'dayjs';
 import { ref, reactive, computed, watch } from 'vue';
@@ -8,6 +7,8 @@ import { useBalancesStore } from '@/stores/balances';
 import { Delete, Edit } from '@element-plus/icons-vue';
 
 import { addPlusSign, findSameDate } from '@/utils/commonUtils';
+
+import loadingUtils from '../../CustomLoading';
 
 interface Props {
   accountId: string;
@@ -79,17 +80,25 @@ function editDialogOpen(balanceId: string) {
   Object.assign(form, balancesStore.getById(balanceId));
 }
 
-function deleteBalance(balanceId: string) {
+async function deleteBalance(balanceId: string) {
+  loadingUtils.startLoading();
+
   balancesStore.deleteBalance(balanceId);
+
+  loadingUtils.closeLoading();
 }
 
-function saveBalance() {
+async function saveBalance() {
+  loadingUtils.startLoading();
+
   if (isEdit.value) {
-    balancesStore.editBalance({ ...form });
+    await balancesStore.editBalance({ ...form });
   } else {
-    balancesStore.addBalance({ ...form });
+    await balancesStore.addBalance({ ...form });
   }
+
   isDialogVisible.value = !isDialogVisible.value;
+  loadingUtils.closeLoading();
 }
 
 // ========================================

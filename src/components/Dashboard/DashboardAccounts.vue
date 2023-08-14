@@ -8,6 +8,8 @@ import { useUsersStore } from '@/stores/users';
 import { useAccountsStore } from '@/stores/accounts';
 import { Search, Delete, Edit } from '@element-plus/icons-vue';
 
+import loadingUtils from '../../CustomLoading';
+
 const router = useRouter();
 const accountsStore = useAccountsStore();
 const usersStore = useUsersStore();
@@ -75,17 +77,25 @@ function editDialogOpen(accountId: string) {
   Object.assign(form, accountsStore.getById(accountId));
 }
 
-function deleteAccount(accountId: string) {
-  accountsStore.deleteAccount(accountId);
+async function deleteAccount(accountId: string) {
+  loadingUtils.startLoading();
+
+  await accountsStore.deleteAccount(accountId);
+
+  loadingUtils.closeLoading();
 }
 
-function saveUser() {
+async function saveUser() {
+  loadingUtils.startLoading();
+
   if (isEdit.value) {
-    accountsStore.editAccount({ ...form });
+    await accountsStore.editAccount({ ...form });
   } else {
-    accountsStore.addAccount({ ...form });
+    await accountsStore.addAccount({ ...form });
   }
+
   isDialogVisible.value = !isDialogVisible.value;
+  loadingUtils.closeLoading();
 }
 
 function getInitialUserName(userId: string): string {

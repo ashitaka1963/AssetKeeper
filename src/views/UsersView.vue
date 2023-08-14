@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// TODO:Loading
 // TODO:バリデーション（重複登録チェック、数値）
 
 import { ref, reactive, computed, watch } from 'vue';
@@ -8,6 +7,8 @@ import PageHeader from '../components/PageHeader.vue';
 
 import { useUsersStore } from '@/stores/users';
 import { Delete, Edit } from '@element-plus/icons-vue';
+
+import loadingUtils from '../CustomLoading';
 
 const usersStore = useUsersStore();
 const isTop = ref(true);
@@ -61,7 +62,11 @@ const dialogButtonName = computed((): any => {
 // Methods
 // ========================================
 async function init() {
+  loadingUtils.startLoading();
+
   await getUsers();
+
+  loadingUtils.closeLoading();
 }
 
 function getUsers() {
