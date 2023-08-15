@@ -8,11 +8,16 @@ import PageHeader from '../components/PageHeader.vue';
 import { useUsersStore } from '@/stores/users';
 import { Delete, Edit } from '@element-plus/icons-vue';
 
+import ConfirmDialog from '../components/parts/ConfirmDialog.vue';
+
 import loadingUtils from '../CustomLoading';
 
 const usersStore = useUsersStore();
 const isTop = ref(true);
 const isDialogVisible = ref(false);
+const isConfirmDialogVisible = ref(false);
+const deleteUserId = ref('');
+const deleteUserName = ref('');
 const isEdit = ref(true);
 
 let form: any = reactive({
@@ -100,6 +105,17 @@ async function saveUser() {
   loadingUtils.closeLoading();
 }
 
+function onConfirmButtonClick() {
+  deleteUser(deleteUserId.value);
+  onCancelButtonClick();
+}
+
+function onCancelButtonClick() {
+  isConfirmDialogVisible.value = false;
+  deleteUserName.value = '';
+  deleteUserId.value = '';
+}
+
 // ========================================
 // Watch
 // ========================================
@@ -146,7 +162,11 @@ watch(isDialogVisible, (value) => {
                 <el-button
                   class="sub-icon-button"
                   color="#30343d"
-                  @click="deleteUser(scope.row._id)"
+                  @click="
+                    isConfirmDialogVisible = true;
+                    deleteUserId = scope.row._id;
+                    deleteUserName = scope.row.userName;
+                  "
                   :icon="Delete"
                   circle
                 ></el-button>
@@ -189,6 +209,13 @@ watch(isDialogVisible, (value) => {
         </el-form-item>
       </el-form>
     </el-dialog>
+
+    <ConfirmDialog
+      :isDialogVisible="isConfirmDialogVisible"
+      :message="`ユーザ(${deleteUserName})を削除しますか？`"
+      @clickConfirmed="onConfirmButtonClick"
+      @clickCanceled="onCancelButtonClick"
+    />
   </main>
 </template>
 
