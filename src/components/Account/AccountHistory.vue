@@ -83,7 +83,7 @@ function editDialogOpen(balanceId: string) {
 async function deleteBalance(balanceId: string) {
   loadingUtils.startLoading();
 
-  balancesStore.deleteBalance(balanceId);
+  await balancesStore.deleteBalance(balanceId);
 
   loadingUtils.closeLoading();
 }

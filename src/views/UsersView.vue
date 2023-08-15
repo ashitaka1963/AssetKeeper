@@ -80,17 +80,24 @@ function editDialogOpen(userId: string) {
   Object.assign(form, usersStore.getById(userId));
 }
 
-function deleteUser(userId: string) {
-  usersStore.deleteUser(userId);
+async function deleteUser(userId: string) {
+  loadingUtils.startLoading();
+
+  await usersStore.deleteUser(userId);
+
+  loadingUtils.closeLoading();
 }
 
-function saveUser() {
+async function saveUser() {
+  loadingUtils.startLoading();
+
   if (isEdit.value) {
-    usersStore.editUser({ ...form });
+    await usersStore.editUser({ ...form });
   } else {
-    usersStore.addUser({ ...form });
+    await usersStore.addUser({ ...form });
   }
   isDialogVisible.value = !isDialogVisible.value;
+  loadingUtils.closeLoading();
 }
 
 // ========================================
