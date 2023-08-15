@@ -6,6 +6,8 @@ import { ref, reactive, computed, watch } from 'vue';
 import { useBalancesStore } from '@/stores/balances';
 import { Delete, Edit } from '@element-plus/icons-vue';
 
+import ConfirmDialog from '../parts/ConfirmDialog.vue';
+
 import { addPlusSign, findSameDate } from '@/utils/commonUtils';
 
 import loadingUtils from '../../CustomLoading';
@@ -19,6 +21,10 @@ const props = defineProps<Props>();
 const balancesStore = useBalancesStore();
 
 const isDialogVisible = ref(false);
+const isConfirmDialogVisible = ref(false);
+const deleteBalanceId = ref('');
+const deleteBalanceDate = ref('');
+
 const isEdit = ref(true);
 let form: any = reactive({
   _id: null,
@@ -101,6 +107,17 @@ async function saveBalance() {
   loadingUtils.closeLoading();
 }
 
+function onConfirmButtonClick() {
+  deleteBalance(deleteBalanceId.value);
+  onCancelButtonClick();
+}
+
+function onCancelButtonClick() {
+  isConfirmDialogVisible.value = false;
+  deleteBalanceDate.value = '';
+  deleteBalanceId.value = '';
+}
+
 // ========================================
 // Watch
 // ========================================
@@ -121,7 +138,7 @@ watch(isDialogVisible, (value) => {
         <el-table :data="balances" style="width: 100%">
           <el-table-column prop="balanceDate" label="対象月" width="180">
             <template #default="scope"
-              >{{ scope.row.balanceDate ? dayjs(scope.row.balanceDate).format('YYYY/MM/DD') : '-' }}
+              >{{ scope.row.balanceDate ? dayjs(scope.row.balanceDate).format('YYYY/MM') : '-' }}
             </template>
           </el-table-column>
           <el-table-column prop="balanceAmount" label="残高">
@@ -157,7 +174,11 @@ watch(isDialogVisible, (value) => {
               <el-button
                 class="sub-icon-button"
                 color="#30343d"
-                @click="deleteBalance(scope.row._id)"
+                @click="
+                  isConfirmDialogVisible = true;
+                  deleteBalanceId = scope.row._id;
+                  deleteBalanceDate = dayjs(scope.row.balanceDate).format('YYYY/MM');
+                "
                 :icon="Delete"
                 circle
               ></el-button>
@@ -198,6 +219,13 @@ watch(isDialogVisible, (value) => {
       </el-form-item>
     </el-form>
   </el-dialog>
+
+  <ConfirmDialog
+    :isDialogVisible="isConfirmDialogVisible"
+    :message="`残高履歴(${deleteBalanceDate})を削除しますか？`"
+    @clickConfirmed="onConfirmButtonClick"
+    @clickCanceled="onCancelButtonClick"
+  />
 </template>
 
 <style scoped>
