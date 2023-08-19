@@ -1,13 +1,11 @@
 <script setup lang="ts">
-// TODO:アカウント削除前のダイアログ
-
 import dayjs from 'dayjs';
-import { ref, reactive, computed, watch } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useUsersStore } from '@/stores/users';
 import { useAccountsStore } from '@/stores/accounts';
 import { Search, Delete, Edit } from '@element-plus/icons-vue';
-
+import type { FormInstance, FormRules } from 'element-plus';
 import ConfirmDialog from '../parts/ConfirmDialog.vue';
 
 import loadingUtils from '../../CustomLoading';
@@ -15,6 +13,7 @@ import loadingUtils from '../../CustomLoading';
 const router = useRouter();
 const accountsStore = useAccountsStore();
 const usersStore = useUsersStore();
+const ruleFormRef = ref<FormInstance>();
 
 const isDialogVisible = ref(false);
 const isConfirmDialogVisible = ref(false);
@@ -22,14 +21,21 @@ const deleteAccountId = ref('');
 const deleteAccountName = ref('');
 const isEdit = ref(true);
 
-let form: any = reactive({
+interface Account {
+  _id: string | null;
+  accountName: string;
+  accountType: string;
+  ownerId: string;
+}
+
+const form = reactive<Account>({
   _id: null,
   accountName: '',
   accountType: '',
   ownerId: ''
 });
 
-let defaultForm: any = {
+const defaultForm: Account = {
   _id: null,
   accountName: '',
   accountType: '',
@@ -46,6 +52,27 @@ const accountTypeOptions = [
     label: 'Brokerage'
   }
 ];
+
+const rules = reactive<FormRules<Account>>({
+  accountName: [
+    { required: true, message: 'アカウント名を入力してください。', trigger: 'blur' },
+    { min: 1, max: 15, message: '15文字以内で入力してください。', trigger: 'blur' }
+  ],
+  accountType: [
+    {
+      required: true,
+      message: 'タイプを選択してください。',
+      trigger: 'change'
+    }
+  ],
+  ownerId: [
+    {
+      required: true,
+      message: 'オーナーを選択してください。',
+      trigger: 'change'
+    }
+  ]
+});
 
 // ========================================
 // Computed
@@ -76,7 +103,7 @@ function goToAccountView(accountId: string) {
 }
 
 function editDialogOpen(accountId: string) {
-  isDialogVisible.value = !isDialogVisible.value;
+  isDialogVisible.value = true;
   isEdit.value = true;
 
   Object.assign(form, accountsStore.getById(accountId));
@@ -90,7 +117,7 @@ async function deleteAccount(accountId: string) {
   loadingUtils.closeLoading();
 }
 
-async function saveUser() {
+async function saveAccount() {
   loadingUtils.startLoading();
 
   if (isEdit.value) {
@@ -99,7 +126,7 @@ async function saveUser() {
     await accountsStore.addAccount({ ...form });
   }
 
-  isDialogVisible.value = !isDialogVisible.value;
+  isDialogVisible.value = false;
   loadingUtils.closeLoading();
 }
 
@@ -115,6 +142,29 @@ function getUserColor(userId: string): string {
   return foundUser ? foundUser.color : '';
 }
 
+async function submitForm() {
+  const formEl = ruleFormRef.value;
+  if (!formEl) return;
+
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      saveAccount();
+    } else {
+      console.log('error submit!', fields);
+    }
+  });
+}
+
+function cancelForm() {
+  const formEl = ruleFormRef.value;
+  if (!formEl) return;
+
+  formEl.resetFields();
+
+  Object.assign(form, defaultForm);
+  isDialogVisible.value = false;
+}
+
 function onConfirmButtonClick() {
   deleteAccount(deleteAccountId.value);
   onCancelButtonClick();
@@ -125,13 +175,6 @@ function onCancelButtonClick() {
   deleteAccountName.value = '';
   deleteAccountId.value = '';
 }
-
-// ========================================
-// Watch
-// ========================================
-watch(isDialogVisible, (value) => {
-  !value ? Object.assign(form, defaultForm) : '';
-});
 </script>
 
 <template>
@@ -224,13 +267,13 @@ watch(isDialogVisible, (value) => {
       :title="dialogTitle"
       width="30%"
       align-center
-      class="dialog"
+      :before-close="cancelForm"
     >
-      <el-form :model="form" label-width="80px">
-        <el-form-item label="Name">
+      <el-form ref="ruleFormRef" :model="form" :rules="rules" label-width="80px" status-icon>
+        <el-form-item label="Name" prop="accountName">
           <el-input v-model="form.accountName" />
         </el-form-item>
-        <el-form-item label="Type">
+        <el-form-item label="Type" prop="accountType">
           <el-select v-model="form.accountType" placeholder="Select">
             <el-option
               v-for="item in accountTypeOptions"
@@ -240,7 +283,7 @@ watch(isDialogVisible, (value) => {
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="Owner">
+        <el-form-item label="Owner" prop="ownerId">
           <el-select v-model="form.ownerId" placeholder="Select">
             <el-option
               v-for="item in users"
@@ -251,8 +294,8 @@ watch(isDialogVisible, (value) => {
           </el-select>
         </el-form-item>
         <el-form-item>
-          <el-button color="#c7a780" @click="saveUser">{{ dialogButtonName }}</el-button>
-          <el-button type="info" @click="isDialogVisible = false">Cancel</el-button>
+          <el-button color="#c7a780" @click="submitForm">{{ dialogButtonName }}</el-button>
+          <el-button type="info" @click="cancelForm">Cancel</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
