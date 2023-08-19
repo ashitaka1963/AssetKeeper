@@ -11,12 +11,14 @@ import ConfirmDialog from '../parts/ConfirmDialog.vue';
 import { addPlusSign, findSameDate } from '@/utils/commonUtils';
 
 import loadingUtils from '../../CustomLoading';
+import type { FormInstance, FormRules } from 'element-plus';
 
 interface Props {
   accountId: string;
 }
 
 const props = defineProps<Props>();
+const ruleFormRef = ref<FormInstance>();
 
 const balancesStore = useBalancesStore();
 
@@ -26,21 +28,63 @@ const deleteBalanceId = ref('');
 const deleteBalanceDate = ref('');
 
 const isEdit = ref(true);
-let form: any = reactive({
+
+interface Balance {
+  _id: string | null;
+  accountId: string;
+  balanceDate: string;
+  balanceAmount: string;
+  memo: string;
+}
+
+const form = reactive<Balance>({
   _id: null,
   accountId: props.accountId,
-  balanceDate: '',
+  balanceDate: dayjs().format('YYYY/MM'),
   balanceAmount: '',
   memo: ''
 });
 
-let defaultForm: any = {
+const defaultForm: Balance = {
   _id: null,
   accountId: props.accountId,
-  balanceDate: '',
+  balanceDate: dayjs().format('YYYY/MM'),
   balanceAmount: '',
   memo: ''
 };
+
+const validateBalanceDate = (rule: any, value: any, callback: any) => {
+  if (value === '') {
+    callback(new Error('日付を選択してください。'));
+  }
+
+  const foundData = balances.value.find((item: any) => {
+    const balanceDate = dayjs(item.balanceDate);
+    return balanceDate.isSame(dayjs(value), 'month');
+  });
+
+  if (foundData) {
+    callback(new Error('登録日付が重複しています。'));
+  } else {
+    callback();
+  }
+};
+
+const rules = reactive<FormRules<Balance>>({
+  balanceDate: [{ validator: validateBalanceDate, trigger: 'blur' }],
+  balanceAmount: [
+    {
+      required: true,
+      message: '残高を入力してください。',
+      trigger: 'blur'
+    },
+    {
+      type: 'number',
+      message: '数値を入力してください。',
+      trigger: 'blur'
+    }
+  ]
+});
 
 // ========================================
 // Computed
@@ -81,7 +125,7 @@ const dialogButtonName = computed((): any => {
 // Methods
 // ========================================
 function editDialogOpen(balanceId: string) {
-  isDialogVisible.value = !isDialogVisible.value;
+  isDialogVisible.value = true;
   isEdit.value = true;
   Object.assign(form, balancesStore.getById(balanceId));
 }
@@ -103,8 +147,31 @@ async function saveBalance() {
     await balancesStore.addBalance({ ...form });
   }
 
-  isDialogVisible.value = !isDialogVisible.value;
+  isDialogVisible.value = false;
   loadingUtils.closeLoading();
+}
+
+async function submitForm() {
+  const formEl = ruleFormRef.value;
+  if (!formEl) return;
+
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      saveBalance();
+    } else {
+      console.log('error submit!', fields);
+    }
+  });
+}
+
+function cancelForm() {
+  const formEl = ruleFormRef.value;
+  if (!formEl) return;
+
+  formEl.resetFields();
+
+  Object.assign(form, defaultForm);
+  isDialogVisible.value = false;
 }
 
 function onConfirmButtonClick() {
@@ -117,13 +184,6 @@ function onCancelButtonClick() {
   deleteBalanceDate.value = '';
   deleteBalanceId.value = '';
 }
-
-// ========================================
-// Watch
-// ========================================
-watch(isDialogVisible, (value) => {
-  !value ? Object.assign(form, defaultForm) : '';
-});
 </script>
 
 <template>
@@ -189,9 +249,15 @@ watch(isDialogVisible, (value) => {
     </el-row>
   </div>
   <!-- dialog -->
-  <el-dialog v-model="isDialogVisible" :title="dialogTitle" width="30%" align-center class="dialog">
-    <el-form :model="form" label-width="80px">
-      <el-form-item label="日付">
+  <el-dialog
+    v-model="isDialogVisible"
+    :title="dialogTitle"
+    width="30%"
+    align-center
+    :before-close="cancelForm"
+  >
+    <el-form ref="ruleFormRef" :model="form" :rules="rules" label-width="80px" status-icon>
+      <el-form-item label="日付" prop="balanceDate">
         <el-date-picker
           v-model="form.balanceDate"
           type="month"
@@ -202,20 +268,20 @@ watch(isDialogVisible, (value) => {
           :disabled="isEdit"
         />
       </el-form-item>
-      <el-form-item label="残高">
+      <el-form-item label="残高" prop="balanceAmount">
         <el-input
-          v-model="form.balanceAmount"
+          v-model.number="form.balanceAmount"
           :formatter="(value: string) => `¥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
           :parser="(value: string) => value.replace(/\¥\s?|(,*)/g, '')"
         />
       </el-form-item>
 
-      <el-form-item label="メモ">
+      <el-form-item label="メモ" prop="memo">
         <el-input v-model="form.memo" type="textarea" />
       </el-form-item>
       <el-form-item>
-        <el-button color="#c7a780" @click="saveBalance">{{ dialogButtonName }}</el-button>
-        <el-button type="info" @click="isDialogVisible = false">Cancel</el-button>
+        <el-button color="#c7a780" @click="submitForm">{{ dialogButtonName }}</el-button>
+        <el-button type="info" @click="cancelForm">Cancel</el-button>
       </el-form-item>
     </el-form>
   </el-dialog>

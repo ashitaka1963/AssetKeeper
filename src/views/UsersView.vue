@@ -1,6 +1,4 @@
 <script setup lang="ts">
-// TODO:バリデーション（重複登録チェック、数値）
-
 import { ref, reactive, computed, watch } from 'vue';
 
 import PageHeader from '../components/PageHeader.vue';
@@ -11,8 +9,11 @@ import { Delete, Edit } from '@element-plus/icons-vue';
 import ConfirmDialog from '../components/parts/ConfirmDialog.vue';
 
 import loadingUtils from '../CustomLoading';
+import type { FormInstance, FormRules } from 'element-plus';
 
 const usersStore = useUsersStore();
+const ruleFormRef = ref<FormInstance>();
+
 const isTop = ref(true);
 const isDialogVisible = ref(false);
 const isConfirmDialogVisible = ref(false);
@@ -20,7 +21,16 @@ const deleteUserId = ref('');
 const deleteUserName = ref('');
 const isEdit = ref(true);
 
-let form: any = reactive({
+interface User {
+  _id: string | null;
+  userName: string;
+  password: string;
+  email: string;
+  role: string;
+  color: string;
+}
+
+const form = reactive<User>({
   _id: null,
   userName: '',
   password: '',
@@ -29,7 +39,7 @@ let form: any = reactive({
   color: '#c7a780'
 });
 
-let defaultForm: any = {
+const defaultForm: User = {
   _id: null,
   userName: '',
   password: '',
@@ -37,6 +47,43 @@ let defaultForm: any = {
   role: 'USER',
   color: '#c7a780'
 };
+
+const rules = reactive<FormRules<User>>({
+  userName: [
+    { required: true, message: 'ユーザ名を入力してください。', trigger: 'blur' },
+    { min: 1, max: 15, message: '15文字以内で入力してください。', trigger: 'blur' }
+  ],
+  password: [
+    { required: true, message: 'パスワードを入力してください。', trigger: 'blur' },
+    { min: 8, max: 20, message: '8文字以上20文字以内で入力してください。', trigger: 'change' },
+    {
+      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+$/,
+      message: '小文字、大文字、数字を含んでください。',
+      trigger: 'blur'
+    }
+  ],
+  email: [
+    {
+      type: 'email',
+      message: '有効なメールアドレスを入力してください。',
+      trigger: 'change'
+    }
+  ],
+  role: [
+    {
+      required: true,
+      message: 'ロールを選択してください。',
+      trigger: 'blur'
+    }
+  ],
+  color: [
+    {
+      required: true,
+      message: 'カラーを選択してください。',
+      trigger: 'change'
+    }
+  ]
+});
 
 const roleOptions = [
   {
@@ -79,7 +126,7 @@ function getUsers() {
 }
 
 function editDialogOpen(userId: string) {
-  isDialogVisible.value = !isDialogVisible.value;
+  isDialogVisible.value = true;
   isEdit.value = true;
 
   Object.assign(form, usersStore.getById(userId));
@@ -101,8 +148,31 @@ async function saveUser() {
   } else {
     await usersStore.addUser({ ...form });
   }
-  isDialogVisible.value = !isDialogVisible.value;
+  isDialogVisible.value = false;
   loadingUtils.closeLoading();
+}
+
+async function submitForm() {
+  const formEl = ruleFormRef.value;
+  if (!formEl) return;
+
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      saveUser();
+    } else {
+      console.log('error submit!', fields);
+    }
+  });
+}
+
+function cancelForm() {
+  const formEl = ruleFormRef.value;
+  if (!formEl) return;
+
+  formEl.resetFields();
+
+  Object.assign(form, defaultForm);
+  isDialogVisible.value = false;
 }
 
 function onConfirmButtonClick() {
@@ -115,13 +185,6 @@ function onCancelButtonClick() {
   deleteUserName.value = '';
   deleteUserId.value = '';
 }
-
-// ========================================
-// Watch
-// ========================================
-watch(isDialogVisible, (value) => {
-  !value ? Object.assign(form, defaultForm) : '';
-});
 </script>
 
 <template>
@@ -177,18 +240,24 @@ watch(isDialogVisible, (value) => {
       </el-row>
     </div>
     <!-- dialog -->
-    <el-dialog v-model="isDialogVisible" :title="dialogTitle" width="30%" align-center>
-      <el-form :model="form" label-width="80px">
-        <el-form-item label="Name">
+    <el-dialog
+      v-model="isDialogVisible"
+      :title="dialogTitle"
+      width="30%"
+      align-center
+      :before-close="cancelForm"
+    >
+      <el-form ref="ruleFormRef" :model="form" :rules="rules" label-width="80px" status-icon>
+        <el-form-item label="Name" prop="userName">
           <el-input v-model="form.userName" />
         </el-form-item>
-        <el-form-item label="Password">
+        <el-form-item label="Password" prop="password">
           <el-input v-model="form.password" type="password" show-password />
         </el-form-item>
-        <el-form-item label="E-mail">
+        <el-form-item label="E-mail" prop="email">
           <el-input v-model="form.email" />
         </el-form-item>
-        <el-form-item label="Role">
+        <el-form-item label="Role" prop="role">
           <el-select v-model="form.role" placeholder="Select">
             <el-option
               v-for="item in roleOptions"
@@ -198,14 +267,14 @@ watch(isDialogVisible, (value) => {
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="Color">
+        <el-form-item label="Color" prop="color">
           <el-color-picker v-model="form.color" />
           <span>{{ form.color }}</span>
         </el-form-item>
 
         <el-form-item>
-          <el-button color="#c7a780" @click="saveUser">{{ dialogButtonName }}</el-button>
-          <el-button type="info" @click="isDialogVisible = false">Cancel</el-button>
+          <el-button color="#c7a780" @click="submitForm">{{ dialogButtonName }}</el-button>
+          <el-button type="info" @click="cancelForm">Cancel</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>
