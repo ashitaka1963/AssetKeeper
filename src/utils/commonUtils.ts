@@ -30,11 +30,7 @@ export function isPositive(value: number): boolean {
 }
 
 // 残高履歴一覧から日付が一致する残額を取得する
-export function findSameDate(
-  balanceHistory: Object<T>,
-  targetDate: any,
-  unit: dayjs.OpUnitType
-): number {
+export function findSameDate(balanceHistory: any, targetDate: any, unit: dayjs.OpUnitType): number {
   const foundData = balanceHistory.find((item: any) => {
     const balanceDate = dayjs(item.balance_date);
     return balanceDate.isSame(targetDate, unit);

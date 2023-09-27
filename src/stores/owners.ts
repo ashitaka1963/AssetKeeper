@@ -36,7 +36,7 @@ export const useOwnersStore = defineStore(TABLE_NAME, {
         // 認証済みユーザID取得
         const {
           data: { user }
-        } = await supabase.auth.getUser();
+        }: any = await supabase.auth.getUser();
 
         const { data, error } = await supabase
           .from(TABLE_NAME)

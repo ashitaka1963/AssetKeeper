@@ -8,11 +8,11 @@ import TheSideMenu from './components/TheSideMenu.vue';
 const session = ref();
 
 onMounted(() => {
-  supabase.auth.getSession().then(({ data }) => {
+  supabase.auth.getSession().then(({ data }: any) => {
     session.value = data.session;
   });
 
-  supabase.auth.onAuthStateChange((_, _session) => {
+  supabase.auth.onAuthStateChange((_: any, _session: any) => {
     session.value = _session;
   });
 });
