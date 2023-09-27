@@ -1,4 +1,4 @@
-# 静的コンテンツを GitHub Pages にデプロイするためのシンプルなワークフロー
+# 静的コンテンツを GitHub Pages にデプロイするためのシンプルなワークフロー 
 name: Deploy static content to Pages
 
 on:
