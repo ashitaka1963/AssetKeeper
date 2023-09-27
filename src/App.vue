@@ -1,30 +1,33 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router';
+import { onMounted, ref } from 'vue';
+import { supabase } from './lib/supabaseClient';
+
+import LoginView from './views/LoginView.vue';
 import TheSideMenu from './components/TheSideMenu.vue';
+
+const session = ref();
+
+onMounted(() => {
+  supabase.auth.getSession().then(({ data }) => {
+    session.value = data.session;
+  });
+
+  supabase.auth.onAuthStateChange((_, _session) => {
+    session.value = _session;
+  });
+});
 </script>
-
-<!-- <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-
-</template> -->
 
 <template>
   <div class="common-layout">
-    <el-container>
+    <el-container v-if="session" :session="session">
       <el-aside class="side-menu" width="80px"><TheSideMenu /></el-aside>
-      <el-main><RouterView /></el-main>
+      <el-main>
+        <RouterView />
+      </el-main>
+    </el-container>
+    <el-container v-else>
+      <el-main> <LoginView /></el-main>
     </el-container>
   </div>
 </template>
@@ -96,3 +99,25 @@ nav a:first-of-type {
   }
 }
 </style>
+
+<!-- <script setup>
+import { ref, onMounted } from 'vue';
+import { supabase } from './lib/supabaseClient';
+
+const countries = ref([]);
+
+async function getCountries() {
+  const { data } = await supabase.from('users').select();
+  countries.value = data;
+}
+
+onMounted(() => {
+  getCountries();
+});
+</script>
+
+<template>
+  <ul>
+    <li v-for="country in countries" :key="country.id">{{ country.name }}</li>
+  </ul>
+</template> -->

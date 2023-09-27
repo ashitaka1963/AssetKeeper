@@ -1,17 +1,22 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
+import { supabase } from '../lib/supabaseClient';
 
-import { Menu as IconMenu, Setting, User } from '@element-plus/icons-vue';
+import { Menu as IconMenu, Setting, User, SwitchButton } from '@element-plus/icons-vue';
 
 const router = useRouter();
 
 const routeMap = new Map([
   ['1', 'DashboardView'],
-  ['2', 'UsersView']
+  ['2', 'OwnersView']
 ]);
 
 const menuClick = (key: string) => {
   router.push({ name: routeMap.get(key) });
+};
+
+const signOut = () => {
+  supabase.auth.signOut();
 };
 </script>
 
@@ -23,11 +28,15 @@ const menuClick = (key: string) => {
     </el-menu-item>
     <el-menu-item index="2">
       <el-icon :size="50"><user /></el-icon>
-      <template #title>User</template>
+      <template #title>Owner</template>
     </el-menu-item>
-    <el-menu-item index="3">
+    <!-- <el-menu-item index="3">
       <el-icon :size="50"><setting /></el-icon>
       <template #title>Setting</template>
+    </el-menu-item> -->
+    <el-menu-item index="4" @click="signOut">
+      <el-icon :size="50"><SwitchButton /></el-icon>
+      <template #title>Logout</template>
     </el-menu-item>
   </el-menu>
 </template>

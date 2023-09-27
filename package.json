@@ -15,6 +15,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.36.0",
     "apexcharts": "^3.41.0",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",

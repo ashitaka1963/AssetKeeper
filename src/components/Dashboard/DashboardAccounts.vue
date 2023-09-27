@@ -2,7 +2,7 @@
 import dayjs from 'dayjs';
 import { ref, reactive, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import { useUsersStore } from '@/stores/users';
+import { useOwnersStore } from '@/stores/owners';
 import { useAccountsStore } from '@/stores/accounts';
 import { Search, Delete, Edit } from '@element-plus/icons-vue';
 import type { FormInstance, FormRules } from 'element-plus';
@@ -12,7 +12,7 @@ import loadingUtils from '../../CustomLoading';
 
 const router = useRouter();
 const accountsStore = useAccountsStore();
-const usersStore = useUsersStore();
+const ownersStore = useOwnersStore();
 const ruleFormRef = ref<FormInstance>();
 
 const isDialogVisible = ref(false);
@@ -22,27 +22,27 @@ const deleteAccountName = ref('');
 const isEdit = ref(true);
 
 interface Account {
-  _id: string | null;
+  id: string | null;
   accountName: string;
   accountType: string;
   ownerId: string;
 }
 
 const form = reactive<Account>({
-  _id: null,
+  id: null,
   accountName: '',
   accountType: '',
   ownerId: ''
 });
 
 const defaultForm: Account = {
-  _id: null,
+  id: null,
   accountName: '',
   accountType: '',
   ownerId: ''
 };
 
-const accountTypeOptions = [
+const typeOptions = [
   {
     value: 'Bank',
     label: 'Bank'
@@ -90,8 +90,8 @@ const accounts = computed((): any => {
   return accountsStore.accounts;
 });
 
-const users = computed((): any => {
-  return usersStore.users;
+const owners = computed((): any => {
+  return ownersStore.owners;
 });
 
 // ========================================
@@ -105,6 +105,8 @@ function goToAccountView(accountId: string) {
 function editDialogOpen(accountId: string) {
   isDialogVisible.value = true;
   isEdit.value = true;
+
+  console.log(accountsStore.getById(accountId));
 
   Object.assign(form, accountsStore.getById(accountId));
 }
@@ -130,16 +132,16 @@ async function saveAccount() {
   loadingUtils.closeLoading();
 }
 
-function getInitialUserName(userId: string): string {
-  const foundUser = users.value.find((user: any) => user._id === userId);
+function getInitialOwnerName(ownerId: string): string {
+  const foundOwner = owners.value.find((owner: any) => owner.id === ownerId);
 
-  return foundUser ? foundUser.userName[0].toUpperCase() : null;
+  return foundOwner ? foundOwner.name[0].toUpperCase() : null;
 }
 
-function getUserColor(userId: string): string {
-  const foundUser = users.value.find((user: any) => user._id === userId);
+function getOwnerColor(ownerId: string): string {
+  const foundOwner = owners.value.find((owner: any) => owner.id === ownerId);
 
-  return foundUser ? foundUser.color : '';
+  return foundOwner ? foundOwner.color : '';
 }
 
 async function submitForm() {
@@ -190,8 +192,8 @@ function onCancelButtonClick() {
         <el-table :data="accounts" style="width: 100%">
           <el-table-column prop="ownerId" label="Owner" width="100">
             <template #default="scope">
-              <el-avatar :style="{ backgroundColor: getUserColor(scope.row.ownerId) }">
-                {{ getInitialUserName(scope.row.ownerId) }}
+              <el-avatar :style="{ backgroundColor: getOwnerColor(scope.row.ownerId) }">
+                {{ getInitialOwnerName(scope.row.ownerId) }}
               </el-avatar>
             </template>
           </el-table-column>
@@ -233,14 +235,14 @@ function onCancelButtonClick() {
               <el-button
                 class="normal-icon-button"
                 color="#30343d"
-                @click="goToAccountView(scope.row._id)"
+                @click="goToAccountView(scope.row.id)"
                 :icon="Search"
                 circle
               ></el-button>
               <el-button
                 class="main-icon-button"
                 color="#30343d"
-                @click="editDialogOpen(scope.row._id)"
+                @click="editDialogOpen(scope.row.id)"
                 :icon="Edit"
                 circle
               ></el-button>
@@ -249,7 +251,7 @@ function onCancelButtonClick() {
                 color="#30343d"
                 @click="
                   isConfirmDialogVisible = true;
-                  deleteAccountId = scope.row._id;
+                  deleteAccountId = scope.row.id;
                   deleteAccountName = scope.row.accountName;
                 "
                 :icon="Delete"
@@ -270,13 +272,13 @@ function onCancelButtonClick() {
       :before-close="cancelForm"
     >
       <el-form ref="ruleFormRef" :model="form" :rules="rules" label-width="80px" status-icon>
-        <el-form-item label="Name" prop="accountName">
+        <el-form-item label="Name" prop="name">
           <el-input v-model="form.accountName" />
         </el-form-item>
-        <el-form-item label="Type" prop="accountType">
+        <el-form-item label="Type" prop="type">
           <el-select v-model="form.accountType" placeholder="Select">
             <el-option
-              v-for="item in accountTypeOptions"
+              v-for="item in typeOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -285,12 +287,7 @@ function onCancelButtonClick() {
         </el-form-item>
         <el-form-item label="Owner" prop="ownerId">
           <el-select v-model="form.ownerId" placeholder="Select">
-            <el-option
-              v-for="item in users"
-              :key="item._id"
-              :label="item.userName"
-              :value="item._id"
-            />
+            <el-option v-for="item in owners" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item>

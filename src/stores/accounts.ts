@@ -1,6 +1,9 @@
 import { defineStore } from 'pinia';
-import axios from '../axios';
+import { supabase } from '../lib/supabaseClient';
+// import axios from '../axios';
 import showMessage from '../CustomMessage';
+
+const TABLE_NAME = 'accounts';
 
 export const useAccountsStore = defineStore('accounts', {
   //保持したいデータ
@@ -12,77 +15,108 @@ export const useAccountsStore = defineStore('accounts', {
   getters: {
     getById: (state) => {
       return (accountId: string): any => {
+        console.log(accountId, state.accounts);
+        console.log(state.accounts.find((item: any) => item.id == accountId));
         // const account = state.accounts.get(id) as any;
-        return state.accounts.find((item: any) => item._id === accountId);
+        return state.accounts.find((item: any) => item.id == accountId);
       };
     }
   },
   actions: {
     async fetchAccounts() {
-      axios
-        .get('/accounts-with-balances')
-        .then((response: any) => {
-          this.accounts = response.data;
-          showMessage('アカウントを取得しました。', 'success');
-        })
-        .catch((error: any) => {
-          console.error('Error:', error);
-          showMessage('アカウントの取得に失敗しました。', 'error');
-        });
+      try {
+        // TODO:期間固定
+        const { data, error } = await supabase.functions.invoke(
+          'accounts-with-balances?startDate=2023-01-01&endDate=2023-12-31'
+        );
+
+        if (error) throw error;
+
+        this.accounts = data;
+        showMessage('アカウントを取得しました。', 'success');
+      } catch (error) {
+        console.error('Error:', error);
+        showMessage('アカウントの取得に失敗しました。', 'error');
+      }
     },
     // ========================
     // アカウント
     // ========================
     async addAccount(addItem: any) {
-      axios
-        .post('/accounts', addItem)
-        .then((response: any) => {
-          const account = response.data.account;
-          account.balances = {
+      try {
+        // 認証済みユーザID取得
+        const {
+          data: { user }
+        } = await supabase.auth.getUser();
+
+        const { data, error } = await supabase
+          .from(TABLE_NAME)
+          .insert([
+            {
+              name: addItem.accountName,
+              type: addItem.accountType,
+              owner_id: addItem.ownerId,
+              user_id: user.id
+            }
+          ])
+          .select();
+
+        if (error) throw error;
+
+        this.accounts.push({
+          id: data[0].id,
+          accountName: data[0].name,
+          accountType: data[0].type,
+          ownerId: data[0].owner_id,
+          balances: {
             latestBalance: 0,
             latestDate: null,
             history: []
-          };
-          this.accounts.push(account);
-          showMessage('アカウントが登録されました。', 'success');
-        })
-        .catch((error: any) => {
-          console.error('Error:', error);
-          showMessage('アカウントの登録に失敗しました。', 'error');
+          }
         });
+        showMessage('アカウントが登録されました。', 'success');
+      } catch (error) {
+        console.error('Error:', error);
+        showMessage('アカウントの登録に失敗しました。', 'error');
+      }
     },
     async editAccount(editItem: any) {
-      const accountId = editItem._id;
+      try {
+        const accountId = editItem.id;
+        const { error } = await supabase
+          .from(TABLE_NAME)
+          .update({
+            name: editItem.accountName,
+            type: editItem.accountType,
+            owner_id: editItem.ownerId
+          })
+          .eq('id', accountId);
 
-      axios
-        .patch(`/accounts/${accountId}`, editItem)
-        .then((response: any) => {
-          const updateAccount = this.getById(accountId);
-          Object.assign(updateAccount, response.data.account);
+        if (error) throw error;
 
-          showMessage('アカウントが更新されました。', 'success');
-        })
-        .catch((error: any) => {
-          console.error('Error:', error);
-          showMessage('アカウントの更新に失敗しました。', 'error');
-        });
+        const updateAccount = this.getById(accountId);
+        Object.assign(updateAccount, editItem);
+
+        showMessage('アカウントが更新されました。', 'success');
+      } catch (error: any) {
+        console.error('Error:', error);
+        showMessage('アカウントの更新に失敗しました。', 'error');
+      }
     },
     async deleteAccount(accountId: string) {
-      axios
-        .delete(`/accounts/${accountId}`)
-        .then((response: any) => {
-          const indexToDelete = this.accounts.findIndex((item: any) => item._id === accountId);
+      try {
+        const { error } = await supabase.from(TABLE_NAME).delete().eq('id', accountId);
+        if (error) throw error;
 
-          if (indexToDelete !== -1) {
-            this.accounts.splice(indexToDelete, 1);
-          }
-
-          showMessage('アカウントが削除されました。', 'success');
-        })
-        .catch((error: any) => {
-          console.error('Error:', error);
-          showMessage('アカウントの削除に失敗しました。', 'error');
-        });
+        const indexToDelete = this.accounts.findIndex((item: any) => item.id === accountId);
+        if (indexToDelete !== -1) {
+          this.accounts.splice(indexToDelete, 1);
+        }
+        showMessage('アカウントが削除されました。', 'success');
+      } catch (error: any) {
+        console.error('Error:', error);
+        showMessage('アカウントの削除に失敗しました。', 'error');
+      }
     }
   }
 });

@@ -6,11 +6,11 @@ import DashboardGroupBalance from '../components/Dashboard/DashboardGroupBalance
 import DashboardAccounts from '../components/Dashboard/DashboardAccounts.vue';
 
 import { useAccountsStore } from '@/stores/accounts';
-import { useUsersStore } from '@/stores/users';
+import { useOwnersStore } from '@/stores/owners';
 
 import loadingUtils from '../CustomLoading';
 
-const usersStore = useUsersStore();
+const ownersStore = useOwnersStore();
 const accountsStore = useAccountsStore();
 
 const isTop = ref(true);
@@ -24,7 +24,7 @@ async function init() {
   loadingUtils.startLoading();
 
   await getAccounts();
-  await getUsers();
+  await getOwners();
 
   loadingUtils.closeLoading();
 }
@@ -33,8 +33,8 @@ function getAccounts() {
   accountsStore.fetchAccounts();
 }
 
-function getUsers() {
-  usersStore.fetchUsers();
+function getOwners() {
+  ownersStore.fetchOwners();
 }
 </script>
 

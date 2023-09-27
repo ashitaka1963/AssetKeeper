@@ -1,30 +1,30 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useUsersStore } from '@/stores/users';
+import { useOwnersStore } from '@/stores/owners';
 import { useAccountsStore } from '@/stores/accounts';
 import DonutChart from '../Charts/DonutChart.vue';
 
-const usersStore = useUsersStore();
+const ownersStore = useOwnersStore();
 const accountsStore = useAccountsStore();
 
 // ========================================
 // Computed
 // ========================================
-const users = computed((): any => {
-  return usersStore.users;
+const owners = computed((): any => {
+  return ownersStore.owners;
 });
 
 const accounts = computed((): any => {
   return accountsStore.accounts;
 });
 
-const lineSeriesPerUser = computed((): any => {
-  let lineSeriesPerUser: any = [];
-  users.value.forEach((user: any) => {
-    const userId = user._id;
+const lineSeriesPerOwner = computed((): any => {
+  let lineSeriesPerOwner: any = [];
+  owners.value.forEach((owner: any) => {
+    const ownerId = owner.id;
 
     const filterAccounts = accounts.value.filter((account: any) => {
-      return account.ownerId == userId;
+      return account.ownerId == ownerId;
     });
 
     let series: Array<number> = [];
@@ -35,13 +35,15 @@ const lineSeriesPerUser = computed((): any => {
       labels.push(filterAccount.accountName);
     });
 
-    lineSeriesPerUser.push({
-      userName: user.userName,
+    // TODO:lablesが正常に表示されないときがある。処理速度の問題か？
+
+    lineSeriesPerOwner.push({
+      ownerName: owner.name,
       series: series,
       labels: labels
     });
   });
-  return lineSeriesPerUser;
+  return lineSeriesPerOwner;
 });
 </script>
 
@@ -52,8 +54,8 @@ const lineSeriesPerUser = computed((): any => {
         <el-col :span="24"> <el-text tag="p" size="large">ユーザ別</el-text></el-col>
       </el-row>
       <el-row class="margin-top">
-        <el-col v-for="item in lineSeriesPerUser" :key="item.userName" :span="12">
-          {{ item.userName }}<DonutChart :series="item.series" :labels="item.labels"
+        <el-col v-for="item in lineSeriesPerOwner" :key="item.ownerName" :span="12">
+          {{ item.ownerName }}<DonutChart :series="item.series" :labels="item.labels"
         /></el-col>
       </el-row>
     </el-col>

@@ -30,26 +30,26 @@ const deleteBalanceDate = ref('');
 const isEdit = ref(true);
 
 interface Balance {
-  _id: string | null;
-  accountId: string;
-  balanceDate: string;
-  balanceAmount: string;
+  id: string | null;
+  account_id: string;
+  balance_date: string;
+  amount: string;
   memo: string;
 }
 
 const form = reactive<Balance>({
-  _id: null,
-  accountId: props.accountId,
-  balanceDate: dayjs().format('YYYY/MM'),
-  balanceAmount: '',
+  id: null,
+  account_id: props.accountId,
+  balance_date: dayjs().format('YYYY/MM'),
+  amount: '',
   memo: ''
 });
 
 const defaultForm: Balance = {
-  _id: null,
-  accountId: props.accountId,
-  balanceDate: dayjs().format('YYYY/MM'),
-  balanceAmount: '',
+  id: null,
+  account_id: props.accountId,
+  balance_date: dayjs().format('YYYY/MM'),
+  amount: '',
   memo: ''
 };
 
@@ -58,8 +58,10 @@ const validateBalanceDate = (rule: any, value: any, callback: any) => {
     callback(new Error('日付を選択してください。'));
   }
 
+  if (isEdit.value) callback();
+
   const foundData = balances.value.find((item: any) => {
-    const balanceDate = dayjs(item.balanceDate);
+    const balanceDate = dayjs(item.balance_date);
     return balanceDate.isSame(dayjs(value), 'month');
   });
 
@@ -71,8 +73,8 @@ const validateBalanceDate = (rule: any, value: any, callback: any) => {
 };
 
 const rules = reactive<FormRules<Balance>>({
-  balanceDate: [{ validator: validateBalanceDate, trigger: 'blur' }],
-  balanceAmount: [
+  balance_date: [{ validator: validateBalanceDate, trigger: 'blur' }],
+  amount: [
     {
       required: true,
       message: '残高を入力してください。',
@@ -96,8 +98,8 @@ const balances = computed((): any => {
   // 差分計算
   for (let i = 0; i < balancesStore.balances.length - 1; i++) {
     const currentMonthData = balancesStore.balances[i];
-    const currentAmount = currentMonthData.balanceAmount;
-    const prevAmount = balancesStore.balances[i + 1].balanceAmount;
+    const currentAmount = currentMonthData.amount;
+    const prevAmount = balancesStore.balances[i + 1].amount;
 
     const diff = currentAmount - prevAmount;
     result.push({
@@ -108,7 +110,7 @@ const balances = computed((): any => {
   }
 
   const lastMonthData = balancesStore.balances[balancesStore.balances.length - 1];
-  result.push({ ...lastMonthData, diff: lastMonthData.balanceAmount, diffColor: 'text-accent' });
+  result.push({ ...lastMonthData, diff: lastMonthData.amount, diffColor: 'text-accent' });
 
   return result;
 });
@@ -127,7 +129,9 @@ const dialogButtonName = computed((): any => {
 function editDialogOpen(balanceId: string) {
   isDialogVisible.value = true;
   isEdit.value = true;
-  Object.assign(form, balancesStore.getById(balanceId));
+
+  const balance = balancesStore.getById(balanceId);
+  Object.assign(form, balance);
 }
 
 async function deleteBalance(balanceId: string) {
@@ -196,13 +200,13 @@ function onCancelButtonClick() {
     <el-row>
       <el-col :span="24">
         <el-table :data="balances" style="width: 100%">
-          <el-table-column prop="balanceDate" label="対象月" width="180">
+          <el-table-column prop="balance_date" label="対象月" width="180">
             <template #default="scope"
-              >{{ scope.row.balanceDate ? dayjs(scope.row.balanceDate).format('YYYY/MM') : '-' }}
+              >{{ scope.row.balance_date ? dayjs(scope.row.balance_date).format('YYYY/MM') : '-' }}
             </template>
           </el-table-column>
-          <el-table-column prop="balanceAmount" label="残高">
-            <template #default="scope">￥ {{ scope.row.balanceAmount.toLocaleString() }} </template>
+          <el-table-column prop="amount" label="残高">
+            <template #default="scope">￥ {{ scope.row.amount.toLocaleString() }} </template>
           </el-table-column>
           <el-table-column label="差分">
             <template #default="scope">
@@ -227,7 +231,7 @@ function onCancelButtonClick() {
               <el-button
                 class="main-icon-button"
                 color="#30343d"
-                @click="editDialogOpen(scope.row._id)"
+                @click="editDialogOpen(scope.row.id)"
                 :icon="Edit"
                 circle
               ></el-button>
@@ -236,8 +240,8 @@ function onCancelButtonClick() {
                 color="#30343d"
                 @click="
                   isConfirmDialogVisible = true;
-                  deleteBalanceId = scope.row._id;
-                  deleteBalanceDate = dayjs(scope.row.balanceDate).format('YYYY/MM');
+                  deleteBalanceId = scope.row.id;
+                  deleteBalanceDate = dayjs(scope.row.balance_date).format('YYYY/MM');
                 "
                 :icon="Delete"
                 circle
@@ -257,9 +261,9 @@ function onCancelButtonClick() {
     :before-close="cancelForm"
   >
     <el-form ref="ruleFormRef" :model="form" :rules="rules" label-width="80px" status-icon>
-      <el-form-item label="日付" prop="balanceDate">
+      <el-form-item label="日付" prop="balance_date">
         <el-date-picker
-          v-model="form.balanceDate"
+          v-model="form.balance_date"
           type="month"
           placeholder="Pick a date"
           style="width: 100%"
@@ -268,9 +272,9 @@ function onCancelButtonClick() {
           :disabled="isEdit"
         />
       </el-form-item>
-      <el-form-item label="残高" prop="balanceAmount">
+      <el-form-item label="残高" prop="amount">
         <el-input
-          v-model.number="form.balanceAmount"
+          v-model.number="form.amount"
           :formatter="(value: string) => `¥ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')"
           :parser="(value: string) => value.replace(/\¥\s?|(,*)/g, '')"
         />

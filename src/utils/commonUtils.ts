@@ -36,9 +36,9 @@ export function findSameDate(
   unit: dayjs.OpUnitType
 ): number {
   const foundData = balanceHistory.find((item: any) => {
-    const balanceDate = dayjs(item.balanceDate);
+    const balanceDate = dayjs(item.balance_date);
     return balanceDate.isSame(targetDate, unit);
   });
 
-  return foundData ? foundData.balanceAmount : 0;
+  return foundData ? foundData.amount : 0;
 }

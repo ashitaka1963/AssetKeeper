@@ -21,14 +21,14 @@ const lineSeries = computed((): any => {
   accounts.value.forEach((account: any) => {
     const monthlyData: any = [];
     for (let month = 1; month <= 12; month++) {
-      monthlyData.push(null);
+      monthlyData.push(0);
     }
 
     account.balances.history.forEach((balance: any) => {
-      const balanceYear = dayjs(balance.balanceDate).year();
+      const balanceYear = dayjs(balance.balance_date).year();
       if (balanceYear == year) {
-        const monthIndex = dayjs(balance.balanceDate).month();
-        monthlyData[monthIndex] = balance.balanceAmount;
+        const monthIndex = dayjs(balance.balance_date).month();
+        monthlyData[monthIndex] = balance.amount;
       }
     });
 

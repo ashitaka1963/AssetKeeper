@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useUsersStore } from '@/stores/users';
+import { useOwnersStore } from '@/stores/owners';
 import { useAccountsStore } from '@/stores/accounts';
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const usersStore = useUsersStore();
+const ownersStore = useOwnersStore();
 const accountsStore = useAccountsStore();
 
 // ========================================
@@ -20,7 +20,7 @@ const account = computed((): any => {
 });
 
 const userName = computed((): any => {
-  return usersStore.getById(account.value.ownerId).userName;
+  return ownersStore.getById(account.value.ownerId).name;
 });
 </script>
 

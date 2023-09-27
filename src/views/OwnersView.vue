@@ -3,7 +3,7 @@ import { ref, reactive, computed, watch } from 'vue';
 
 import PageHeader from '../components/PageHeader.vue';
 
-import { useUsersStore } from '@/stores/users';
+import { useOwnersStore } from '@/stores/owners';
 import { Delete, Edit } from '@element-plus/icons-vue';
 
 import ConfirmDialog from '../components/parts/ConfirmDialog.vue';
@@ -11,70 +11,38 @@ import ConfirmDialog from '../components/parts/ConfirmDialog.vue';
 import loadingUtils from '../CustomLoading';
 import type { FormInstance, FormRules } from 'element-plus';
 
-const usersStore = useUsersStore();
+const ownersStore = useOwnersStore();
 const ruleFormRef = ref<FormInstance>();
 
 const isTop = ref(true);
 const isDialogVisible = ref(false);
 const isConfirmDialogVisible = ref(false);
-const deleteUserId = ref('');
-const deleteUserName = ref('');
+const deleteOwnerId = ref('');
+const deleteOwnerName = ref('');
 const isEdit = ref(true);
 
-interface User {
-  _id: string | null;
-  userName: string;
-  password: string;
-  email: string;
-  role: string;
+interface Owner {
+  id: string | null;
+  name: string;
   color: string;
 }
 
-const form = reactive<User>({
-  _id: null,
-  userName: '',
-  password: '',
-  email: '',
-  role: 'USER',
+const form = reactive<Owner>({
+  id: null,
+  name: '',
   color: '#c7a780'
 });
 
-const defaultForm: User = {
-  _id: null,
-  userName: '',
-  password: '',
-  email: '',
-  role: 'USER',
+const defaultForm: Owner = {
+  id: null,
+  name: '',
   color: '#c7a780'
 };
 
-const rules = reactive<FormRules<User>>({
-  userName: [
-    { required: true, message: 'ユーザ名を入力してください。', trigger: 'blur' },
+const rules = reactive<FormRules<Owner>>({
+  name: [
+    { required: true, message: 'オーナー名を入力してください。', trigger: 'blur' },
     { min: 1, max: 15, message: '15文字以内で入力してください。', trigger: 'blur' }
-  ],
-  password: [
-    { required: true, message: 'パスワードを入力してください。', trigger: 'blur' },
-    { min: 8, max: 20, message: '8文字以上20文字以内で入力してください。', trigger: 'change' },
-    {
-      pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]+$/,
-      message: '小文字、大文字、数字を含んでください。',
-      trigger: 'blur'
-    }
-  ],
-  email: [
-    {
-      type: 'email',
-      message: '有効なメールアドレスを入力してください。',
-      trigger: 'change'
-    }
-  ],
-  role: [
-    {
-      required: true,
-      message: 'ロールを選択してください。',
-      trigger: 'blur'
-    }
   ],
   color: [
     {
@@ -84,17 +52,6 @@ const rules = reactive<FormRules<User>>({
     }
   ]
 });
-
-const roleOptions = [
-  {
-    value: 'USER',
-    label: 'USER'
-  },
-  {
-    value: 'ADMIN',
-    label: 'ADMIN'
-  }
-];
 
 init();
 
@@ -116,37 +73,37 @@ const dialogButtonName = computed((): any => {
 async function init() {
   loadingUtils.startLoading();
 
-  await getUsers();
+  await getOwners();
 
   loadingUtils.closeLoading();
 }
 
-function getUsers() {
-  usersStore.fetchUsers();
+function getOwners() {
+  ownersStore.fetchOwners();
 }
 
-function editDialogOpen(userId: string) {
+function editDialogOpen(ownerId: string) {
   isDialogVisible.value = true;
   isEdit.value = true;
 
-  Object.assign(form, usersStore.getById(userId));
+  Object.assign(form, ownersStore.getById(ownerId));
 }
 
-async function deleteUser(userId: string) {
+async function deleteOwner(ownerId: string) {
   loadingUtils.startLoading();
 
-  await usersStore.deleteUser(userId);
+  await ownersStore.deleteOwner(ownerId);
 
   loadingUtils.closeLoading();
 }
 
-async function saveUser() {
+async function saveOwner() {
   loadingUtils.startLoading();
 
   if (isEdit.value) {
-    await usersStore.editUser({ ...form });
+    await ownersStore.editOwner({ ...form });
   } else {
-    await usersStore.addUser({ ...form });
+    await ownersStore.addOwner({ ...form });
   }
   isDialogVisible.value = false;
   loadingUtils.closeLoading();
@@ -158,7 +115,7 @@ async function submitForm() {
 
   await formEl.validate((valid, fields) => {
     if (valid) {
-      saveUser();
+      saveOwner();
     } else {
       console.log('error submit!', fields);
     }
@@ -176,27 +133,25 @@ function cancelForm() {
 }
 
 function onConfirmButtonClick() {
-  deleteUser(deleteUserId.value);
+  deleteOwner(deleteOwnerId.value);
   onCancelButtonClick();
 }
 
 function onCancelButtonClick() {
   isConfirmDialogVisible.value = false;
-  deleteUserName.value = '';
-  deleteUserId.value = '';
+  deleteOwnerName.value = '';
+  deleteOwnerId.value = '';
 }
 </script>
 
 <template>
   <main>
-    <PageHeader headerName="Users" :isTop="isTop" />
+    <PageHeader headerName="Owners" :isTop="isTop" />
     <div class="container">
       <el-row>
         <el-col :span="24">
-          <el-table :data="usersStore.users" style="width: 100%">
-            <el-table-column prop="userName" label="Name" />
-            <el-table-column prop="email" label="E-mail" />
-            <el-table-column prop="role" label="Role" />
+          <el-table :data="ownersStore.owners" style="width: 100%">
+            <el-table-column prop="name" label="Name" />
             <el-table-column prop="color" label="Color">
               <template #default="scope">
                 <el-color-picker v-model="scope.row.color" disabled />
@@ -211,14 +166,14 @@ function onCancelButtonClick() {
                     isDialogVisible = true;
                     isEdit = false;
                   "
-                  >Add User</el-button
+                  >Add Owner</el-button
                 >
               </template>
               <template #default="scope">
                 <el-button
                   class="main-icon-button"
                   color="#30343d"
-                  @click="editDialogOpen(scope.row._id)"
+                  @click="editDialogOpen(scope.row.id)"
                   :icon="Edit"
                   circle
                 ></el-button>
@@ -227,8 +182,8 @@ function onCancelButtonClick() {
                   color="#30343d"
                   @click="
                     isConfirmDialogVisible = true;
-                    deleteUserId = scope.row._id;
-                    deleteUserName = scope.row.userName;
+                    deleteOwnerId = scope.row.id;
+                    deleteOwnerName = scope.row.name;
                   "
                   :icon="Delete"
                   circle
@@ -248,24 +203,8 @@ function onCancelButtonClick() {
       :before-close="cancelForm"
     >
       <el-form ref="ruleFormRef" :model="form" :rules="rules" label-width="80px" status-icon>
-        <el-form-item label="Name" prop="userName">
-          <el-input v-model="form.userName" />
-        </el-form-item>
-        <el-form-item label="Password" prop="password">
-          <el-input v-model="form.password" type="password" show-password />
-        </el-form-item>
-        <el-form-item label="E-mail" prop="email">
-          <el-input v-model="form.email" />
-        </el-form-item>
-        <el-form-item label="Role" prop="role">
-          <el-select v-model="form.role" placeholder="Select">
-            <el-option
-              v-for="item in roleOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
+        <el-form-item label="Name" prop="name">
+          <el-input v-model="form.name" />
         </el-form-item>
         <el-form-item label="Color" prop="color">
           <el-color-picker v-model="form.color" />
@@ -281,7 +220,7 @@ function onCancelButtonClick() {
 
     <ConfirmDialog
       :isDialogVisible="isConfirmDialogVisible"
-      :message="`ユーザ(${deleteUserName})を削除しますか？`"
+      :message="`ユーザ(${deleteOwnerName})を削除しますか？`"
       @clickConfirmed="onConfirmButtonClick"
       @clickCanceled="onCancelButtonClick"
     />

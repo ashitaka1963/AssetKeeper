@@ -28,10 +28,10 @@ const lineSeries = computed((): any => {
 
   // トランザクションデータを月ごとにマッピング
   balances.value.forEach((balance: any) => {
-    const balanceYear = dayjs(balance.balanceDate).year();
+    const balanceYear = dayjs(balance.balance_date).year();
     if (balanceYear == year) {
-      const monthIndex = dayjs(balance.balanceDate).month();
-      monthlyData[monthIndex].y = balance.balanceAmount;
+      const monthIndex = dayjs(balance.balance_date).month();
+      monthlyData[monthIndex].y = balance.amount;
     }
   });
 
@@ -48,7 +48,7 @@ const lineSeries = computed((): any => {
 // 最新残高履歴
 const getLatestBalance = computed((): number => {
   if (balances.value.length != 0) {
-    return balances.value[0].balanceAmount.toLocaleString();
+    return balances.value[0].amount.toLocaleString();
   } else {
     return 0;
   }
