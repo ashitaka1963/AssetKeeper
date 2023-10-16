@@ -1,8 +1,13 @@
 <script setup lang="ts">
+// TODO:新規ユーザー登録
+// TODO:パスワード忘れ画面
+// TODO:ロゴ追加
 import { ref } from 'vue';
 import { supabase } from '../lib/supabaseClient';
 
-const loading = ref(false);
+import { Message, Lock } from '@element-plus/icons-vue';
+import showMessage from '../CustomMessage';
+
 const isSignUp = ref(false);
 const email = ref('');
 const password = ref('');
@@ -23,43 +28,67 @@ const handleAuth = async () => {
       if (error) throw error;
     }
   } catch (error: any) {
-    alert(error.error_description || error.message);
+    showMessage('メールアドレスまたはパスワードが間違っています。', 'error');
+    // alert(error.error_description || error.message);
   }
 };
 </script>
 
 <template>
-  <form class="row flex-center flex" @submit.prevent="handleAuth">
-    <div class="col-6 form-widget">
-      <h1 class="header">AssetKeeper</h1>
-      <el-switch
-        v-model="isSignUp"
-        size="large"
-        active-text="Sign Up"
-        inactive-text="Sign In"
-        style="--el-switch-on-color: #136ace; --el-switch-off-color: #13ce66"
-      />
+  <!-- Login -->
+  <el-row class="row-bg" justify="center">
+    <el-col :span="6">
+      <div class="container" style="margin-top: 150px">
+        <el-form>
+          <div class="col-6 form-widget">
+            <h2 class="header">AssetKeeper</h2>
 
-      <div>
-        <input class="inputField" required type="email" placeholder="Your email" v-model="email" />
+            <el-form-item>
+              <el-col :offset="18"> <el-link type="primary">Sign Up</el-link></el-col>
+            </el-form-item>
+            <el-form-item>
+              <el-input v-model="email" :prefix-icon="Message" placeholder="Email" size="small" />
+            </el-form-item>
+            <el-form-item>
+              <el-input
+                v-model="password"
+                :prefix-icon="Lock"
+                type="password"
+                placeholder="Password"
+                size="small"
+              />
+            </el-form-item>
+            <el-form-item>
+              <el-col :offset="0">
+                <el-link type="info">パスワードを忘れた場合はこちら</el-link></el-col
+              >
+            </el-form-item>
+
+            <el-form-item>
+              <el-col :offset="15">
+                <el-button type="primary" @click="handleAuth"> LOGIN </el-button></el-col
+              >
+            </el-form-item>
+          </div>
+        </el-form>
       </div>
-      <div>
-        <input
-          class="inputField"
-          required
-          type="password"
-          placeholder="Your password"
-          v-model="password"
-        />
-      </div>
-      <div>
-        <input
-          type="submit"
-          class="button block"
-          :value="isSignUp ? 'Sing Up' : 'Sing In'"
-          :disabled="loading"
-        />
-      </div>
-    </div>
-  </form>
+    </el-col>
+  </el-row>
+
+  <!-- SingUp -->
+  <!-- PasswordReset -->
 </template>
+
+<style scoped>
+.container {
+  width: 300px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item {
+  width: 10em;
+}
+</style>
