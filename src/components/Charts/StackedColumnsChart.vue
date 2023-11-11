@@ -83,10 +83,18 @@ const optionsInit: any = {
       useSeriesColors: false
     },
     markers: {
-      fillColors: ['#c7a780', '#E7DFD6', '#4A4F5E', '#6fd4c3']
+      fillColors: [
+        '#c7a780',
+        '#E7DFD6',
+        '#4A4F5E',
+        '#6fd4c3',
+        '#c7a780',
+        '#E7DFD6',
+        '#4A4F5E',
+        '#6fd4c3'
+      ]
     }
   },
-
   fill: {
     colors: ['#c7a780', '#E7DFD6', '#4A4F5E', '#6fd4c3']
   }
@@ -95,6 +103,23 @@ const optionsInit: any = {
 const options = computed((): any => {
   const option = optionsInit;
   option.xaxis.categories = props.xaxis;
+
+  // グラフの塗りつぶし（fill-colors)は繰り返しカラー設定されるが、こちらは繰り返されず、既定色が設定されてしまうため、
+  // グラフの塗りつぶしカラーと凡例のカラーがずれるため動的に設定する
+  const seriesLength = props.series.length;
+  if (seriesLength > 1) {
+    const originalColors = ['#c7a780', '#E7DFD6', '#4A4F5E', '#6fd4c3'];
+    const repeatCount = Math.ceil(seriesLength / originalColors.length);
+
+    const repeatedColors = [];
+    for (let i = 0; i < repeatCount; i++) {
+      repeatedColors.push(...originalColors);
+    }
+
+    console.log(repeatedColors);
+
+    option.legend.markers.fillColors = [...repeatedColors];
+  }
 
   return option;
 });
