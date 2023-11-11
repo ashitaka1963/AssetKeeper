@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 
 interface Props {
-  series: object;
+  series: Array<object>;
   xaxis: Array<string>;
 }
 
