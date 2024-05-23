@@ -143,29 +143,34 @@ async function deleteBalance(balanceId: string) {
 }
 
 async function saveBalance() {
-  loadingUtils.startLoading();
-
   if (isEdit.value) {
     await balancesStore.editBalance({ ...form });
   } else {
     await balancesStore.addBalance({ ...form });
   }
-
-  isDialogVisible.value = false;
-  loadingUtils.closeLoading();
 }
 
 async function submitForm() {
+  // バリデーションチェック
   const formEl = ruleFormRef.value;
   if (!formEl) return;
 
-  await formEl.validate((valid, fields) => {
-    if (valid) {
-      saveBalance();
-    } else {
+  const isFormValid = await formEl.validate((valid, fields) => {
+    if (!valid) {
       console.log('error submit!', fields);
     }
+
+    return valid;
   });
+
+  if (isFormValid) {
+    loadingUtils.startLoading();
+
+    saveBalance();
+
+    closeForm();
+    loadingUtils.closeLoading();
+  }
 }
 
 function cancelForm() {
@@ -174,6 +179,10 @@ function cancelForm() {
 
   formEl.resetFields();
 
+  closeForm();
+}
+
+function closeForm() {
   Object.assign(form, defaultForm);
   isDialogVisible.value = false;
 }
