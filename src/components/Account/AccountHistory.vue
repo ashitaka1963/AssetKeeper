@@ -3,6 +3,7 @@
 import dayjs from 'dayjs';
 import { ref, reactive, computed, watch } from 'vue';
 
+import { useAccountsStore } from '@/stores/accounts';
 import { useBalancesStore } from '@/stores/balances';
 import { Delete, Edit } from '@element-plus/icons-vue';
 
@@ -21,6 +22,7 @@ const props = defineProps<Props>();
 const ruleFormRef = ref<FormInstance>();
 
 const balancesStore = useBalancesStore();
+const accountsStore = useAccountsStore();
 
 const isDialogVisible = ref(false);
 const isConfirmDialogVisible = ref(false);
@@ -137,16 +139,37 @@ function editDialogOpen(balanceId: string) {
 async function deleteBalance(balanceId: string) {
   loadingUtils.startLoading();
 
-  await balancesStore.deleteBalance(balanceId);
+  const returnedBalance = await balancesStore.deleteBalance(balanceId);
+
+  if (returnedBalance) {
+    // 最新残高および日付を更新
+    await accountsStore.editAccount({
+      id: returnedBalance.account_id,
+      latest_balance: returnedBalance.amount,
+      latest_date: returnedBalance.balance_date
+    });
+  }
 
   loadingUtils.closeLoading();
 }
 
 async function saveBalance() {
+  let returnedBalance = null;
   if (isEdit.value) {
-    await balancesStore.editBalance({ ...form });
+    returnedBalance = await balancesStore.editBalance({ ...form });
   } else {
-    await balancesStore.addBalance({ ...form });
+    returnedBalance = await balancesStore.addBalance({ ...form });
+  }
+
+  if (!returnedBalance) return;
+
+  if (returnedBalance.balance_date == balances.value[0].balance_date) {
+    // 最新残高および日付を更新
+    await accountsStore.editAccount({
+      id: returnedBalance.account_id,
+      latest_balance: returnedBalance.amount,
+      latest_date: returnedBalance.balance_date
+    });
   }
 }
 

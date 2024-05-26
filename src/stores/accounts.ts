@@ -85,11 +85,12 @@ export const useAccountsStore = defineStore('accounts', {
         const accountId = editItem.id;
         const { error } = await supabase
           .from(TABLE_NAME)
-          .update({
-            name: editItem.accountName,
-            type: editItem.accountType,
-            owner_id: editItem.ownerId
-          })
+          // .update({
+          //   name: editItem.accountName,
+          //   type: editItem.accountType,
+          //   owner_id: editItem.ownerId
+          // })
+          .update(editItem)
           .eq('id', accountId);
 
         if (error) throw error;
