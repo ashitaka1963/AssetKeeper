@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import dayjs from 'dayjs';
-import axios from '../axios';
 import showMessage from '../CustomMessage';
 import { supabase } from '../lib/supabaseClient';
 
@@ -64,26 +63,18 @@ export const useBalancesStore = defineStore('balances', {
         if (error) throw error;
 
         this.balances.push(data[0]);
+        // 昇順ソート（古⇒新）
         this.balances.sort((a: any, b: any) => dayjs(b.balance_date).diff(dayjs(a.balance_date)));
         showMessage('残高情報が登録されました。', 'success');
+
+        return data[0];
       } catch (error) {
         console.error('Error:', error);
         showMessage('残高情報の登録に失敗しました。', 'error');
+        return null;
       }
     },
     async editBalance(editItem: any) {
-      // const balanceId = editItem._id;
-      // axios
-      //   .patch(`/balances/${balanceId}`, editItem)
-      //   .then((response: any) => {
-      //     const updateBalance = this.getById(balanceId);
-      //     Object.assign(updateBalance, response.data.balance);
-      //     showMessage('残高情報が更新されました。', 'success');
-      //   })
-      //   .catch((error: any) => {
-      //     console.error('Error:', error);
-      //     showMessage('残高情報の更新に失敗しました。', 'error');
-      //   });
       try {
         const balanceId = editItem.id;
         const { error } = await supabase.from(TABLE_NAME).update(editItem).eq('id', balanceId);
@@ -95,38 +86,43 @@ export const useBalancesStore = defineStore('balances', {
         Object.assign(updateBalance, editItem);
 
         showMessage('残高情報が更新されました。', 'success');
+        return editItem;
       } catch (error: any) {
         console.error('Error:', error);
         showMessage('残高情報の更新に失敗しました。', 'error');
+        return null;
       }
     },
     async deleteBalance(balanceId: string) {
-      // axios
-      //   .delete(`/balances/${balanceId}`)
-      //   .then((response: any) => {
-      //     const indexToDelete = this.balances.findIndex((item: any) => item._id === balanceId);
-      //     if (indexToDelete !== -1) {
-      //       this.balances.splice(indexToDelete, 1);
-      //     }
-      //     showMessage('残高情報が削除されました。', 'success');
-      //   })
-      //   .catch((error: any) => {
-      //     console.error('Error:', error);
-      //     showMessage('残高情報の削除に失敗しました。', 'error');
-      //   });
-
       try {
         const { error } = await supabase.from(TABLE_NAME).delete().eq('id', balanceId);
         if (error) throw error;
 
         const indexToDelete = this.balances.findIndex((item: any) => item.id === balanceId);
+
+        const accountId = this.balances[0].account_id;
         if (indexToDelete !== -1) {
           this.balances.splice(indexToDelete, 1);
         }
         showMessage('残高情報が削除されました。', 'success');
+
+        if (this.balances.length == 0) {
+          // 履歴がすべて削除された場合には、初期値を設定
+          return {
+            account_id: accountId,
+            amount: 0,
+            balance_date: null
+          };
+        } else if (indexToDelete == 0) {
+          return this.balances[0];
+        } else {
+          return null;
+        }
       } catch (error: any) {
         console.error('Error:', error);
         showMessage('残高情報の削除に失敗しました。', 'error');
+
+        return null;
       }
     }
   }
