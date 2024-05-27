@@ -205,18 +205,12 @@ function onCancelButtonClick() {
             </template>
           </el-table-column>
 
-          <el-table-column prop="balances.latestBalance" label="Latest Balance" width="180">
-            <template #default="scope"
-              >￥ {{ scope.row.balances.latestBalance.toLocaleString() }}
-            </template>
+          <el-table-column prop="latestBalance" label="Latest Balance" width="180">
+            <template #default="scope">￥ {{ scope.row.latestBalance.toLocaleString() }} </template>
           </el-table-column>
-          <el-table-column prop="balances.latestDate" label="Latest Date" width="180">
+          <el-table-column prop="latestDate" label="Latest Date" width="180">
             <template #default="scope"
-              >{{
-                scope.row.balances.latestDate
-                  ? dayjs(scope.row.balances.latestDate).format('YYYY/MM/DD')
-                  : '-'
-              }}
+              >{{ scope.row.latestDate ? dayjs(scope.row.latestDate).format('YYYY/MM/DD') : '-' }}
             </template>
           </el-table-column>
 
