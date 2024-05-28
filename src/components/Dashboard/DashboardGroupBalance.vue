@@ -31,7 +31,7 @@ const lineSeriesPerOwner = computed((): any => {
     let labels: Array<string> = [];
 
     filterAccounts.forEach((filterAccount: any) => {
-      series.push(filterAccount.balances.latestBalance);
+      series.push(filterAccount.latestBalance);
       labels.push(filterAccount.accountName);
     });
 
