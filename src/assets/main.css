@@ -34,3 +34,34 @@ a,
     padding: 0 2rem;
   }
 } */
+
+/* div
+  > section
+  > main
+  > main
+  > div.el-row.container
+  > div.el-col.el-col-2
+  > div:nth-child(1)
+  > div
+  > div
+  > div {
+  background-color: #c7a780;
+} */
+
+/* assetkeeper-select */
+
+div.el-select.el-select--small.assetkeeper-select > div > div > div {
+  background-color: #c7a780;
+}
+
+div.el-select.el-select--small.assetkeeper-select > div > div > div > input {
+  color: white;
+}
+
+div.el-select.el-select--small.assetkeeper-select > div > div > div > span > span > i {
+  color: white;
+}
+
+.el-select {
+  --el-select-input-focus-border-color: #c7a780 !important;
+}
