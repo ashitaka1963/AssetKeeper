@@ -56,8 +56,6 @@ const xaxisCategories = computed((): any => {
 const totalAmount = computed((): any => {
   let totalAmount = 0;
 
-  console.log(accounts.value);
-
   accounts.value.forEach((account: any) => {
     totalAmount += account.latestBalance;
   });
