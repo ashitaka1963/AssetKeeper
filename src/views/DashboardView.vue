@@ -29,12 +29,12 @@ async function init() {
   loadingUtils.closeLoading();
 }
 
-function getAccounts() {
-  accountsStore.fetchAccounts();
+async function getAccounts() {
+  await accountsStore.fetchAccounts();
 }
 
-function getOwners() {
-  ownersStore.fetchOwners();
+async function getOwners() {
+  await ownersStore.fetchOwners();
 }
 </script>
 

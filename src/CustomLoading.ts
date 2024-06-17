@@ -12,11 +12,9 @@ const startLoading = () => {
 };
 
 const closeLoading = () => {
-  // loadingInstance.close();
-
   setTimeout(() => {
     loadingInstance.close();
-  }, 1500); // TODO:クローズ処理までが早すぎてLoadingが見えないため仮追加
+  }, 1000);
 };
 
 const loadingUtils = {
