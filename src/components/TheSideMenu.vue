@@ -30,14 +30,13 @@ const signOut = () => {
       <el-icon :size="50"><user /></el-icon>
       <template #title>Owner</template>
     </el-menu-item>
-    <!-- <el-menu-item index="3">
-      <el-icon :size="50"><setting /></el-icon>
-      <template #title>Setting</template>
-    </el-menu-item> -->
-    <el-menu-item index="4" @click="signOut">
-      <el-icon :size="50"><SwitchButton /></el-icon>
-      <template #title>Logout</template>
-    </el-menu-item>
+    <div class="fixed-bottom">
+      <el-divider style="border-color: #7c808e"> </el-divider>
+      <el-menu-item index="4" @click="signOut">
+        <el-icon :size="50"><SwitchButton /></el-icon>
+        <template #title>Logout</template>
+      </el-menu-item>
+    </div>
   </el-menu>
 </template>
 
@@ -45,6 +44,7 @@ const signOut = () => {
 .el-menu {
   border-right: none;
   margin: 0 auto;
+  height: 100%;
 }
 
 .el-menu-item i {
@@ -54,5 +54,11 @@ const signOut = () => {
 .el-menu-item.is-active {
   color: #c7a780;
   background-color: #30343d;
+}
+
+.fixed-bottom {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
 }
 </style>

@@ -33,8 +33,15 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.common-layout,
+.el-container {
+  height: 100%;
+  margin: 0;
+}
+
 .side-menu {
   background-color: #1f222a;
+  padding-top: 10px;
 }
 
 header {
