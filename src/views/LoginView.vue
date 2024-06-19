@@ -4,6 +4,7 @@
 // TODO:ロゴ追加
 import { ref } from 'vue';
 import { supabase } from '../lib/supabaseClient';
+import PasswordResetView from './PasswordResetView.vue';
 
 import { Message, Lock } from '@element-plus/icons-vue';
 import showMessage from '../CustomMessage';
@@ -11,6 +12,7 @@ import showMessage from '../CustomMessage';
 const isSignUp = ref(false);
 const email = ref('');
 const password = ref('');
+const isDialogVisible = ref(true);
 
 const handleAuth = async () => {
   try {
@@ -60,8 +62,10 @@ const handleAuth = async () => {
             </el-form-item>
             <el-form-item>
               <el-col :offset="0">
-                <el-link type="info">パスワードを忘れた場合はこちら</el-link></el-col
-              >
+                <el-link type="info" @click="isDialogVisible = !isDialogVisible"
+                  >パスワードを忘れた場合はこちら
+                </el-link>
+              </el-col>
             </el-form-item>
 
             <el-form-item>
@@ -74,6 +78,16 @@ const handleAuth = async () => {
       </div>
     </el-col>
   </el-row>
+  <el-dialog
+    v-model="isDialogVisible"
+    title="パスワードリセット"
+    width="30%"
+    align-center
+    :before-close="cancelForm"
+    style="padding-top: 0px"
+  >
+    <PasswordResetView />
+  </el-dialog>
 
   <!-- SingUp -->
   <!-- PasswordReset -->
