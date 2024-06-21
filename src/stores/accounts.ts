@@ -32,7 +32,14 @@ export const useAccountsStore = defineStore('accounts', {
 
         if (error) throw error;
 
+        data.sort((a: any, b: any) => {
+          if (b.ownerId > a.ownerId) return -1;
+          if (b.ownerId < a.ownerId) return 1;
+
+          return b.latestBalance - a.latestBalance;
+        });
         this.accounts = data;
+        console.log(data);
         showMessage('アカウントを取得しました。', 'success');
       } catch (error) {
         console.error('Error:', error);
