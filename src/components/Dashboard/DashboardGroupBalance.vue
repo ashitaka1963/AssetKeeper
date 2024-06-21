@@ -35,8 +35,6 @@ const lineSeriesPerOwner = computed((): any => {
       labels.push(filterAccount.accountName);
     });
 
-    // TODO:lablesが正常に表示されないときがある。処理速度の問題か？
-
     lineSeriesPerOwner.push({
       ownerName: owner.name,
       series: series,

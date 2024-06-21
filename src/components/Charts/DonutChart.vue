@@ -37,7 +37,14 @@ const optionsInit: any = {
             show: true,
             showAlways: true,
             label: 'Total',
-            color: '#7c808e'
+            color: '#7c808e',
+            formatter: function (w) {
+              const sum = w.globals.seriesTotals.reduce((a, b) => {
+                return a + b;
+              }, 0);
+
+              return sum.toLocaleString();
+            }
           }
         }
       }
