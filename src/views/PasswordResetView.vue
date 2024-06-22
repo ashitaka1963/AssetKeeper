@@ -26,8 +26,8 @@ function resetPassword() {
 
         <el-form-item>
           <el-col :offset="15">
-            <el-button type="primary" @click="resetPassword"> リセット </el-button></el-col
-          >
+            <el-button type="primary" @click="resetPassword"> リセット </el-button>
+          </el-col>
         </el-form-item>
       </el-form>
     </el-col>

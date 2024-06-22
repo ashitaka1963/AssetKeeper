@@ -12,7 +12,7 @@ import showMessage from '../CustomMessage';
 const isSignUp = ref(false);
 const email = ref('');
 const password = ref('');
-const isDialogVisible = ref(true);
+const isPasswordDialogVisible = ref(false);
 
 const handleAuth = async () => {
   try {
@@ -62,7 +62,7 @@ const handleAuth = async () => {
             </el-form-item>
             <el-form-item>
               <el-col :offset="0">
-                <el-link type="info" @click="isDialogVisible = !isDialogVisible"
+                <el-link type="info" @click="isPasswordDialogVisible = !isPasswordDialogVisible"
                   >パスワードを忘れた場合はこちら
                 </el-link>
               </el-col>
@@ -79,11 +79,10 @@ const handleAuth = async () => {
     </el-col>
   </el-row>
   <el-dialog
-    v-model="isDialogVisible"
+    v-model="isPasswordDialogVisible"
     title="パスワードリセット"
     width="30%"
     align-center
-    :before-close="cancelForm"
     style="padding-top: 0px"
   >
     <PasswordResetView />
