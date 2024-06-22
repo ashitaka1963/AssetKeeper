@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router';
 import { supabase } from '../lib/supabaseClient';
 
-import { Menu as IconMenu, Setting, User, SwitchButton } from '@element-plus/icons-vue';
+import { Menu as IconMenu, User, SwitchButton } from '@element-plus/icons-vue';
 
 const router = useRouter();
 

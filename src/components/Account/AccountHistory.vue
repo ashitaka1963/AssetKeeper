@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // TODO:バリデーション（重複登録チェック、数値）
 import dayjs from 'dayjs';
-import { ref, reactive, computed, watch } from 'vue';
+import { ref, reactive, computed } from 'vue';
 
 import { useAccountsStore } from '@/stores/accounts';
 import { useBalancesStore } from '@/stores/balances';
@@ -9,7 +9,7 @@ import { Delete, Edit } from '@element-plus/icons-vue';
 
 import ConfirmDialog from '../parts/ConfirmDialog.vue';
 
-import { addPlusSign, findSameDate } from '@/utils/commonUtils';
+import { addPlusSign } from '@/utils/commonUtils';
 
 import loadingUtils from '../../CustomLoading';
 import type { FormInstance, FormRules } from 'element-plus';

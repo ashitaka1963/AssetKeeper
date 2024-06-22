@@ -38,8 +38,8 @@ const optionsInit: any = {
             showAlways: true,
             label: 'Total',
             color: '#7c808e',
-            formatter: function (w) {
-              const sum = w.globals.seriesTotals.reduce((a, b) => {
+            formatter: function (w: any) {
+              const sum = w.globals.seriesTotals.reduce((a: number, b: number) => {
                 return a + b;
               }, 0);
 

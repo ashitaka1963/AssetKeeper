@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import showMessage from '../CustomMessage';
+import { Message } from '@element-plus/icons-vue';
 
 const email = ref('');
 
