@@ -116,8 +116,6 @@ const options = computed((): any => {
       repeatedColors.push(...originalColors);
     }
 
-    console.log(repeatedColors);
-
     option.legend.markers.fillColors = [...repeatedColors];
   }
 

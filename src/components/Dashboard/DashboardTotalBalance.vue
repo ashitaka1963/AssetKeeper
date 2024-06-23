@@ -1,16 +1,37 @@
 <script setup lang="ts">
 import dayjs from 'dayjs';
-import { computed } from 'vue';
+import { ref, computed } from 'vue';
 import { useAccountsStore } from '@/stores/accounts';
 import StackedColumnsChart from '../Charts/StackedColumnsChart.vue';
 import { addPlusSign, calculateIncreaseRatio, isPositive, findSameDate } from '@/utils/commonUtils';
+import loadingUtils from '../../CustomLoading';
 
 const accountsStore = useAccountsStore();
-const year = 2023; //TODO:2023年固定
+const selectYear = ref(dayjs().year());
+const yearOptions: any[] = [];
+
+for (let i = 0; i < 3; i++) {
+  yearOptions.push({
+    value: selectYear.value - i,
+    label: selectYear.value - i
+  });
+}
 
 // ========================================
 // Computed
 // ========================================
+async function changeYear() {
+  loadingUtils.startLoading();
+
+  await getAccounts();
+
+  loadingUtils.closeLoading();
+}
+
+async function getAccounts() {
+  await accountsStore.fetchAccounts(selectYear.value);
+}
+
 const accounts = computed((): any => {
   return accountsStore.accounts;
 });
@@ -26,7 +47,7 @@ const lineSeries = computed((): any => {
 
     account.balances.history.forEach((balance: any) => {
       const balanceYear = dayjs(balance.balance_date).year();
-      if (balanceYear == year) {
+      if (balanceYear == selectYear.value) {
         const monthIndex = dayjs(balance.balance_date).month();
         monthlyData[monthIndex] = balance.amount;
       }
@@ -44,9 +65,10 @@ const lineSeries = computed((): any => {
 const xaxisCategories = computed((): any => {
   const categories: any = [];
   for (let month = 1; month <= 12; month++) {
-    const monthString = month.toString().padStart(2, '0');
-    const date = dayjs(`${year}-${monthString}-01`);
-    categories.push(date.format('YYYY/MM'));
+    // const monthString = month.toString().padStart(2, '0');
+    // const date = dayjs(`${selectYear.value}-${monthString}-01`);
+    // categories.push(date.format('MM'));
+    categories.push(month + '月');
   }
 
   return categories;
@@ -120,7 +142,7 @@ const previousYearRatio = computed((): string => {
 
 <template>
   <el-row class="container">
-    <el-col :span="8">
+    <el-col :span="6">
       <el-row>
         <el-col :span="24">
           <el-text tag="p" size="large">総資産</el-text>
@@ -186,9 +208,27 @@ const previousYearRatio = computed((): string => {
         </el-col>
       </el-row>
     </el-col>
-    <el-col :span="16"
-      ><StackedColumnsChart :series="lineSeries" :xaxis="xaxisCategories"
-    /></el-col>
+    <el-col :span="16">
+      <StackedColumnsChart :series="lineSeries" :xaxis="xaxisCategories" />
+    </el-col>
+    <el-col :span="2">
+      <el-select
+        v-model="selectYear"
+        placeholder="Select"
+        size="small"
+        style="width: 70px"
+        effect="dark"
+        class="assetkeeper-select"
+        @change="changeYear"
+      >
+        <el-option
+          v-for="item in yearOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+    </el-col>
   </el-row>
 </template>
 

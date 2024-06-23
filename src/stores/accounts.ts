@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { defineStore } from 'pinia';
 import { supabase } from '../lib/supabaseClient';
 // import axios from '../axios';
@@ -23,11 +24,12 @@ export const useAccountsStore = defineStore('accounts', {
     }
   },
   actions: {
-    async fetchAccounts() {
+    async fetchAccounts(targetYear: string) {
       try {
-        // TODO:期間固定
+        const year = targetYear ? targetYear : dayjs().year();
+
         const { data, error } = await supabase.functions.invoke(
-          'accounts-with-balances?startDate=2023-01-01&endDate=2023-12-31'
+          `accounts-with-balances?startDate=${year}-01-01&endDate=${year}-12-31`
         );
 
         if (error) throw error;
@@ -39,7 +41,7 @@ export const useAccountsStore = defineStore('accounts', {
           return b.latestBalance - a.latestBalance;
         });
         this.accounts = data;
-        console.log(data);
+
         showMessage('アカウントを取得しました。', 'success');
       } catch (error) {
         console.error('Error:', error);
