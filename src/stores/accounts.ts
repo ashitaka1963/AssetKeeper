@@ -24,7 +24,7 @@ export const useAccountsStore = defineStore('accounts', {
     }
   },
   actions: {
-    async fetchAccounts(targetYear: string) {
+    async fetchAccounts(targetYear: number) {
       try {
         const year = targetYear ? targetYear : dayjs().year();
 
