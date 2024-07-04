@@ -2,13 +2,14 @@
 import { useRouter } from 'vue-router';
 import { supabase } from '../lib/supabaseClient';
 
-import { Menu as IconMenu, User, SwitchButton } from '@element-plus/icons-vue';
+import { Menu as IconMenu, User, SwitchButton, DocumentAdd } from '@element-plus/icons-vue';
 
 const router = useRouter();
 
 const routeMap = new Map([
   ['1', 'DashboardView'],
-  ['2', 'OwnersView']
+  ['2', 'OwnersView'],
+  ['3', 'ImportView']
 ]);
 
 const menuClick = (key: string) => {
@@ -29,6 +30,10 @@ const signOut = () => {
     <el-menu-item index="2">
       <el-icon :size="50"><user /></el-icon>
       <template #title>Owner</template>
+    </el-menu-item>
+    <el-menu-item index="3">
+      <el-icon :size="50"><DocumentAdd /></el-icon>
+      <template #title>ImportView</template>
     </el-menu-item>
     <div class="fixed-bottom">
       <el-divider style="border-color: #7c808e"> </el-divider>
