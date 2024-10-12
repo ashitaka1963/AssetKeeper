@@ -187,7 +187,7 @@ function handleFileUpload(event: any) {
 
 <template>
   <main>
-    <PageHeader headerName="Import" :isTop="isTop" />
+    <PageHeader :headerName="$t('form.header.import')" :isTop="isTop" />
     <div class="container">
       <el-row>
         <el-col :span="24">

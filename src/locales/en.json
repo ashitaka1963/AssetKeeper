@@ -1,0 +1,27 @@
+{
+  "message": {},
+  "form": {
+    "header": {
+      "dashboard": "Dashboard",
+      "account": "Account",
+      "import": "Import",
+      "owner": "Owner",
+      "new": "New",
+      "edit": "Edit"
+    },
+    "single": {
+      "name": "Name",
+      "color": "Color"
+    },
+    "table": {
+      "name": "Name",
+      "color": "Color"
+    },
+    "button": {
+      "add": "Add",
+      "create": "Create",
+      "update": "Update",
+      "cancel": "Cancel"
+    }
+  }
+}

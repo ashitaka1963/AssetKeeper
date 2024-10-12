@@ -1,0 +1,28 @@
+{
+  "message": {},
+
+  "form": {
+    "header": {
+      "dashboard": "ダッシュボード",
+      "account": "アカウント",
+      "import": "インポート",
+      "owner": "オーナー",
+      "new": "新規",
+      "edit": "編集"
+    },
+    "single": {
+      "name": "名前",
+      "color": "カラー"
+    },
+    "table": {
+      "name": "名前",
+      "color": "カラー"
+    },
+    "button": {
+      "add": "追加",
+      "create": "登録",
+      "update": "更新",
+      "cancel": "中止"
+    }
+  }
+}

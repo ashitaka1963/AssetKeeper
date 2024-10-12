@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue';
+import { useI18n } from 'vue-i18n';
 
 import PageHeader from '../components/PageHeader.vue';
 
@@ -13,6 +14,8 @@ import type { FormInstance, FormRules } from 'element-plus';
 
 const ownersStore = useOwnersStore();
 const ruleFormRef = ref<FormInstance>();
+
+const { t } = useI18n();
 
 const isTop = ref(true);
 const isDialogVisible = ref(false);
@@ -60,11 +63,11 @@ init();
 // ========================================
 
 const dialogTitle = computed((): any => {
-  return isEdit.value ? 'Edit' : 'New';
+  return isEdit.value ? t('form.header.edit') : t('form.header.new');
 });
 
 const dialogButtonName = computed((): any => {
-  return isEdit.value ? 'Update' : 'Create';
+  return isEdit.value ? t('form.button.update') : t('form.button.create');
 });
 
 // ========================================
@@ -146,13 +149,13 @@ function onCancelButtonClick() {
 
 <template>
   <main>
-    <PageHeader headerName="Owners" :isTop="isTop" />
+    <PageHeader :headerName="$t('form.header.owner')" :isTop="isTop" />
     <div class="container">
       <el-row>
         <el-col :span="24">
           <el-table :data="ownersStore.owners" style="width: 100%">
-            <el-table-column prop="name" label="Name" />
-            <el-table-column prop="color" label="Color">
+            <el-table-column prop="name" :label="$t('form.table.name')" />
+            <el-table-column prop="color" :label="$t('form.table.color')">
               <template #default="scope">
                 <el-color-picker v-model="scope.row.color" disabled />
                 <span>{{ scope.row.color }}</span>
@@ -166,7 +169,7 @@ function onCancelButtonClick() {
                     isDialogVisible = true;
                     isEdit = false;
                   "
-                  >Add Owner</el-button
+                  >{{ $t('form.button.add') }}</el-button
                 >
               </template>
               <template #default="scope">
@@ -203,17 +206,17 @@ function onCancelButtonClick() {
       :before-close="cancelForm"
     >
       <el-form ref="ruleFormRef" :model="form" :rules="rules" label-width="80px" status-icon>
-        <el-form-item label="Name" prop="name">
+        <el-form-item :label="$t('form.single.name')" prop="name">
           <el-input v-model="form.name" />
         </el-form-item>
-        <el-form-item label="Color" prop="color">
+        <el-form-item :label="$t('form.single.color')" prop="color">
           <el-color-picker v-model="form.color" />
           <span>{{ form.color }}</span>
         </el-form-item>
 
         <el-form-item>
           <el-button color="#c7a780" @click="submitForm">{{ dialogButtonName }}</el-button>
-          <el-button type="info" @click="cancelForm">Cancel</el-button>
+          <el-button type="info" @click="cancelForm">{{ $t('form.button.cancel') }}</el-button>
         </el-form-item>
       </el-form>
     </el-dialog>

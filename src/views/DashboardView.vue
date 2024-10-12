@@ -40,7 +40,7 @@ async function getOwners() {
 
 <template>
   <main>
-    <PageHeader headerName="Dashboard" :isTop="isTop" />
+    <PageHeader :headerName="$t('form.header.dashboard')" :isTop="isTop" />
     <DashboardTotalBalance />
     <DashboardGroupBalance />
     <DashboardAccounts />
