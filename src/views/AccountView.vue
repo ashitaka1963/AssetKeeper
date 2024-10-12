@@ -38,7 +38,7 @@ function getBalancesByAccountId() {
 
 <template>
   <main>
-    <PageHeader headerName="Account" :isTop="isTop" />
+    <PageHeader :headerName="$t('form.header.account')" :isTop="isTop" />
 
     <AccountInfo :accountId="props.id" />
     <AccountBalance />
