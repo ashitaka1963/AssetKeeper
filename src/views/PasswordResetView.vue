@@ -15,7 +15,8 @@ async function resetPassword() {
   console.log('asset', appUrl + '/AssetKeeper/User');
 
   await supabase.auth.resetPasswordForEmail(email.value, {
-    redirectTo: appUrl + '/AssetKeeper/User'
+    // redirectTo: appUrl + '/AssetKeeper/User'
+    redirectTo: 'https://ashitaka1963.github.io/AssetKeeper/User'
   });
 
   loadingUtils.closeLoading();
