@@ -1,0 +1,30 @@
+{
+  "message": {},
+  "form": {
+    "header": {
+      "dashboard": "Dashboard",
+      "account": "Account",
+      "import": "Import",
+      "owner": "Owner",
+      "passwordReset": "PasswordReset",
+      "new": "New",
+      "edit": "Edit"
+    },
+    "single": {
+      "name": "Name",
+      "color": "Color",
+      "newPassword": "NewPassword",
+      "reNewPassword": "ReNewPassword"
+    },
+    "table": {
+      "name": "Name",
+      "color": "Color"
+    },
+    "button": {
+      "add": "Add",
+      "create": "Create",
+      "update": "Update",
+      "cancel": "Cancel"
+    }
+  }
+}

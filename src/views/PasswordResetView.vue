@@ -1,12 +1,22 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { supabase } from '../lib/supabaseClient';
 import showMessage from '../CustomMessage';
 import { Message } from '@element-plus/icons-vue';
+import loadingUtils from '../CustomLoading';
 
 const email = ref('');
+const appUrl = import.meta.env.VITE_APP_BASE_URL;
 
-function resetPassword() {
-  // TODO: supabaseのパスワードリセット処理
+async function resetPassword() {
+  loadingUtils.startLoading();
+
+  await supabase.auth.resetPasswordForEmail(email.value, {
+    redirectTo: appUrl + '/AssetKeeper/User'
+  });
+
+  loadingUtils.closeLoading();
+
   showMessage(
     'ご入力いただいたメールアドレスにパスワードリセットのリンクを送信しました。<br>メールをご確認ください。',
     'success'
