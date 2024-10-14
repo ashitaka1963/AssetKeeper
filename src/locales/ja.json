@@ -1,18 +1,20 @@
 {
   "message": {},
-
   "form": {
     "header": {
       "dashboard": "ダッシュボード",
       "account": "アカウント",
       "import": "インポート",
       "owner": "オーナー",
+      "passwordReset": "パスワードリセット",
       "new": "新規",
       "edit": "編集"
     },
     "single": {
       "name": "名前",
-      "color": "カラー"
+      "color": "カラー",
+      "newPassword": "新しいパスワード",
+      "reNewPassword": "新しいパスワード再入力"
     },
     "table": {
       "name": "名前",

@@ -3,6 +3,7 @@ import DashboardView from '../views/DashboardView.vue';
 import AccountView from '../views/AccountView.vue';
 import OwnersView from '../views/OwnersView.vue';
 import ImportView from '../views/ImportView.vue';
+import UserView from '../views/UserView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,6 +36,11 @@ const router = createRouter({
       path: '/Import',
       name: 'ImportView',
       component: ImportView
+    },
+    {
+      path: '/User',
+      name: 'UserView',
+      component: UserView
     }
   ]
 });

@@ -6,12 +6,15 @@
       "account": "Account",
       "import": "Import",
       "owner": "Owner",
+      "passwordReset": "PasswordReset",
       "new": "New",
       "edit": "Edit"
     },
     "single": {
       "name": "Name",
-      "color": "Color"
+      "color": "Color",
+      "newPassword": "NewPassword",
+      "reNewPassword": "ReNewPassword"
     },
     "table": {
       "name": "Name",
