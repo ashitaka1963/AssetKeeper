@@ -11,6 +11,9 @@ const appUrl = import.meta.env.VITE_APP_BASE_URL;
 async function resetPassword() {
   loadingUtils.startLoading();
 
+  console.log('appURL', appUrl);
+  console.log('asset', appUrl + '/AssetKeeper/User');
+
   await supabase.auth.resetPasswordForEmail(email.value, {
     redirectTo: appUrl + '/AssetKeeper/User'
   });
