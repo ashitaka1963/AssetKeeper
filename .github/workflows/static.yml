@@ -33,10 +33,10 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: lts/*
           cache: 'npm'
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Build
         run: npm run build
         env:
@@ -44,12 +44,12 @@ jobs:
           VITE_APP_SUPABASE_API_KEY: ${{ secrets.VITE_APP_SUPABASE_API_KEY }}
           VITE_APP_SUPABASE_URL: ${{ secrets.VITE_APP_SUPABASE_URL }}
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           # dist リポジトリのアップロード
           path: './dist'
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
